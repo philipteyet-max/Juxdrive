@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Drivers — JuxDrive Chauffeuring</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD000;
+    --yellow-dark: #E6BB00;
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --gray: #F5F5F0;
+    --text-muted: #555;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--black); background: var(--white); overflow-x: hidden; }
+  h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(10,10,10,0.97); backdrop-filter: blur(8px); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 68px; border-bottom: 1px solid rgba(255,208,0,0.15); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 38px; height: 38px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 900; font-size: 18px; color: var(--black); }
+  .nav-logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; color: var(--white); letter-spacing: 1px; }
+  .nav-logo-text span { color: var(--yellow); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.8); font-size: 13.5px; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--yellow); }
+  .nav-cta { background: var(--yellow); color: var(--black); padding: 9px 22px; border-radius: 4px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--yellow-dark); }
+  .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .nav-hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; }
+
+  /* PAGE HERO */
+  .page-hero { min-height: 480px; background: var(--black); display: grid; grid-template-columns: 1fr 1fr; padding-top: 68px; overflow: hidden; position: relative; }
+  .page-hero-left { padding: 80px 8%; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
+  .page-hero-right { position: relative; overflow: hidden; }
+  .page-hero-right-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+  .page-hero-right::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, var(--black) 0%, transparent 60%); z-index: 1; }
+  .page-hero-right::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: var(--yellow); z-index: 2; }
+  .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 16px; letter-spacing: 0.5px; }
+  .breadcrumb a { color: var(--yellow); }
+  .page-title { font-size: clamp(40px, 6vw, 76px); color: var(--white); line-height: 1.0; margin-bottom: 16px; }
+  .page-title span { color: var(--yellow); }
+  .page-desc { font-size: 15.5px; color: rgba(255,255,255,0.55); max-width: 480px; line-height: 1.75; margin-bottom: 36px; }
+  .hero-stats-row { display: flex; gap: 40px; }
+  .h-stat-num { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 700; color: var(--yellow); }
+  .h-stat-label { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  /* BUTTONS */
+  .btn-primary { background: var(--yellow); color: var(--black); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-block; }
+  .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--white); padding: 13px 32px; border-radius: 4px; font-size: 14px; font-weight: 500; border: 1.5px solid rgba(255,255,255,0.3); cursor: pointer; transition: all 0.2s; display: inline-block; }
+  .btn-outline:hover { border-color: var(--yellow); color: var(--yellow); }
+  .section-label { display: inline-block; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--yellow-dark); font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--yellow); }
+
+  /* STANDARDS STRIP */
+  .standards-strip { background: var(--yellow); padding: 28px 8%; display: flex; gap: 0; overflow: hidden; }
+  .standard-item { flex: 1; display: flex; align-items: center; gap: 14px; padding: 0 24px; border-right: 1px solid rgba(0,0,0,0.1); }
+  .standard-item:last-child { border-right: none; }
+  .standard-icon { font-size: 28px; flex-shrink: 0; }
+  .standard-title { font-size: 14px; font-weight: 700; color: var(--black); }
+  .standard-sub { font-size: 12px; color: rgba(0,0,0,0.55); margin-top: 2px; }
+
+  /* DRIVER CARDS SECTION */
+  .drivers-section { padding: 88px 8%; background: var(--white); }
+  .drivers-section-head { text-align: center; margin-bottom: 64px; }
+  .drivers-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+
+  .driver-card {
+    border: 1.5px solid #eee; border-radius: 14px; overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .driver-card:hover { transform: translateY(-8px); border-color: var(--yellow); box-shadow: 0 20px 52px rgba(255,208,0,0.1); }
+  .driver-card-img { height: 300px; overflow: hidden; position: relative; background: #111; }
+  .driver-card-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.5s; }
+  .driver-card:hover .driver-card-img img { transform: scale(1.05); }
+  .driver-availability {
+    position: absolute; top: 16px; right: 16px;
+    padding: 5px 13px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .available { background: #22c55e; color: white; }
+  .busy { background: #f59e0b; color: white; }
+  .driver-rating {
+    position: absolute; bottom: 16px; left: 16px;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(4px);
+    padding: 5px 12px; border-radius: 20px; color: var(--yellow);
+    font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px;
+  }
+  .driver-card-body { padding: 24px 24px 28px; }
+  .driver-name { font-size: 22px; margin-bottom: 3px; }
+  .driver-title { font-size: 12px; color: #888; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 14px; }
+  .driver-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .driver-tag { background: var(--gray); color: #444; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+  .driver-tag.yellow { background: #fffde6; color: var(--yellow-dark); border: 1px solid rgba(255,208,0,0.3); }
+  .driver-bio { font-size: 13.5px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; }
+  .driver-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 20px; padding: 16px; background: var(--gray); border-radius: 8px; text-align: center; }
+  .d-stat-num { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--black); }
+  .d-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: #888; margin-top: 2px; }
+  .driver-card-btn { width: 100%; background: var(--black); color: var(--white); padding: 12px; border: none; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
+  .driver-card-btn:hover { background: #222; }
+
+  /* VETTING SECTION */
+  .vetting-section { padding: 88px 8%; background: var(--black); }
+  .vetting-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 88px; align-items: center; }
+  .vetting-title { font-size: clamp(28px,4vw,48px); color: var(--white); margin-bottom: 16px; line-height: 1.15; }
+  .vetting-title span { color: var(--yellow); }
+  .vetting-sub { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.75; margin-bottom: 40px; }
+  .vetting-steps { display: flex; flex-direction: column; gap: 0; }
+  .vetting-step { display: flex; gap: 20px; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .vetting-step:last-child { border-bottom: none; }
+  .vetting-step-num { width: 40px; height: 40px; flex-shrink: 0; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; color: var(--black); }
+  .vetting-step-title { font-size: 16px; font-weight: 600; color: var(--white); margin-bottom: 4px; }
+  .vetting-step-desc { font-size: 13.5px; color: rgba(255,255,255,0.45); line-height: 1.65; }
+  .vetting-image { border-radius: 12px; overflow: hidden; position: relative; }
+  .vetting-image img { width: 100%; height: 480px; object-fit: cover; }
+  .vetting-image-badge {
+    position: absolute; bottom: 24px; left: 24px; right: 24px;
+    background: rgba(10,10,10,0.9); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,208,0,0.2); border-radius: 10px; padding: 20px 24px;
+    display: flex; align-items: center; gap: 16px;
+  }
+  .badge-icon { width: 48px; height: 48px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .badge-title { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+  .badge-sub { font-size: 12px; color: rgba(255,255,255,0.45); }
+
+  /* CERTIFICATIONS */
+  .certs-section { padding: 88px 8%; background: var(--gray); }
+  .certs-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; margin-top: 52px; }
+  .cert-card { background: var(--white); border-radius: 12px; padding: 32px 24px; text-align: center; border: 1.5px solid #eee; transition: border-color 0.2s, box-shadow 0.2s; }
+  .cert-card:hover { border-color: var(--yellow); box-shadow: 0 8px 24px rgba(255,208,0,0.1); }
+  .cert-icon { font-size: 40px; margin-bottom: 14px; }
+  .cert-title { font-size: 16px; margin-bottom: 8px; }
+  .cert-desc { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+  /* TESTIMONIALS */
+  .driver-testimonials { padding: 88px 8%; background: var(--white); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 52px; }
+  .testi-card { background: var(--gray); border-radius: 12px; padding: 28px; transition: transform 0.2s; }
+  .testi-card:hover { transform: translateY(-4px); }
+  .testi-stars { color: var(--yellow-dark); font-size: 15px; margin-bottom: 12px; }
+  .testi-quote { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 12px; }
+  .testi-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--black); display: flex; align-items: center; justify-content: center; color: var(--yellow); font-weight: 700; font-size: 14px; flex-shrink: 0; }
+  .testi-name { font-size: 14px; font-weight: 600; }
+  .testi-service { font-size: 12px; color: var(--text-muted); }
+
+  /* CTA BAND */
+  .cta-band { background: var(--yellow); padding: 72px 8%; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .cta-band-title { font-size: clamp(26px,3.5vw,44px); color: var(--black); max-width: 520px; line-height: 1.2; }
+  .btn-black { background: var(--black); color: var(--white); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
+  .btn-black:hover { background: #222; }
+
+  /* FOOTER */
+  footer { background: #060606; border-top: 1px solid rgba(255,208,0,0.1); padding: 60px 8% 32px; color: rgba(255,255,255,0.7); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 48px; }
+  .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .footer-logo-mark { width: 34px; height: 34px; background: var(--yellow); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 900; color: var(--black); }
+  .footer-logo-name { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); font-weight: 700; }
+  .footer-about p { font-size: 13.5px; line-height: 1.75; max-width: 280px; }
+  .footer-col h4 { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 13.5px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 28px; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 12.5px; color: rgba(255,255,255,0.3); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--white); border-radius: 12px; padding: 40px; max-width: 580px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 20px; font-size: 26px; cursor: pointer; background: none; border: none; color: #aaa; line-height: 1; }
+  .modal-driver-banner { display: flex; align-items: center; gap: 18px; background: var(--gray); border-radius: 10px; padding: 20px; margin-bottom: 28px; }
+  .modal-driver-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; object-position: top; border: 3px solid var(--yellow); }
+  .modal-driver-name { font-size: 20px; font-family: 'Playfair Display', serif; }
+  .modal-driver-role { font-size: 13px; color: #888; margin-top: 2px; }
+  .modal-form { display: flex; flex-direction: column; gap: 14px; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-input { border: 1.5px solid #e0e0e0; border-radius: 6px; padding: 13px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 100%; outline: none; transition: border-color 0.2s; }
+  .modal-input:focus { border-color: var(--yellow); }
+  .modal-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 4px; display: block; }
+
+  /* ANIMATE */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .page-hero-left { animation: fadeUp 0.6s ease both; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) { .drivers-grid { grid-template-columns: 1fr 1fr; } .certs-grid { grid-template-columns: 1fr 1fr; } .testi-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 768px) {
+    .page-hero { grid-template-columns: 1fr; } .page-hero-right { height: 260px; }
+    .drivers-grid, .vetting-inner, .testi-grid { grid-template-columns: 1fr; }
+    .certs-grid { grid-template-columns: 1fr 1fr; }
+    .standards-strip { flex-direction: column; gap: 20px; }
+    .standard-item { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0 0 20px; }
+    .standard-item:last-child { border-bottom: none; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .modal-row { grid-template-columns: 1fr; }
+    .cta-band { justify-content: center; text-align: center; }
+    .hero-stats-row { gap: 24px; }
+  }
+
+  /* ═══ JUXDRIVE ANIMATIONS — DRIVERS PAGE ═══ */
+  @keyframes jx-fade-up    { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes jx-slide-right{ from{opacity:0;transform:translateX(-28px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes jx-scale-up   { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
+  @keyframes jx-shimmer    { 0%{background-position:-200% center} 100%{background-position:200% center} }
+  @keyframes jx-nav-in     { from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)} }
+  @keyframes jx-available-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)} 50%{box-shadow:0 0 0 8px rgba(34,197,94,0)} }
+  @keyframes jx-stars-pop  { from{opacity:0;transform:scale(0.5)} to{opacity:1;transform:scale(1)} }
+
+  nav { animation: jx-nav-in 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .nav-links a { position:relative; }
+  .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:1.5px; background:var(--yellow); transition:width 0.3s cubic-bezier(0.22,1,0.36,1); }
+  .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
+
+  /* Hero */
+  .page-hero-left { animation: jx-fade-up 0.8s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+  .page-hero-right-img { animation: jx-fade-up 0.9s 0.3s cubic-bezier(0.22,1,0.36,1) both; }
+  .h-stat-num { animation: jx-fade-up 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+  .hero-stats-row > div:nth-child(1) .h-stat-num { animation-delay:0.7s }
+  .hero-stats-row > div:nth-child(2) .h-stat-num { animation-delay:0.85s }
+  .hero-stats-row > div:nth-child(3) .h-stat-num { animation-delay:1s }
+
+  /* Standards strip */
+  .standards-strip { animation: jx-fade-up 0.6s 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+  .standard-item { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+  .standard-item:hover { transform: translateY(-3px); }
+
+  /* Scroll reveals */
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .reveal-left  { opacity:0; transform:translateX(-28px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+  .reveal-left.visible { opacity:1; transform:translateX(0); }
+  .reveal-right { opacity:0; transform:translateX(28px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+  .reveal-right.visible { opacity:1; transform:translateX(0); }
+
+  /* Driver cards */
+  .driver-card { transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.3s, box-shadow 0.35s; }
+  .driver-card:hover { transform: translateY(-10px); }
+  .driver-card-img img { transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); }
+  .driver-card:hover .driver-card-img img { transform: scale(1.06); }
+
+  /* Availability badge pulse */
+  .driver-availability.available { animation: jx-available-pulse 2.5s ease-in-out infinite; }
+
+  /* Driver rating stars */
+  .driver-rating { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+  .driver-card:hover .driver-rating { transform: scale(1.08); }
+
+  /* Driver tag chips */
+  .driver-tag { transition: background 0.2s, transform 0.2s cubic-bezier(0.22,1,0.36,1); }
+  .driver-tag:hover { transform: scale(1.05); }
+
+  /* CTA button */
+  .driver-card-btn { position:relative; overflow:hidden; transition:background 0.25s, transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s; }
+  .driver-card-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,0.12) 50%,transparent 70%); background-size:200% 100%; opacity:0; }
+  .driver-card-btn:hover::after { opacity:1; animation:jx-shimmer 0.6s ease; }
+  .driver-card-btn:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.3); }
+
+  /* Vetting steps */
+  .vetting-step { transition: padding-left 0.3s cubic-bezier(0.22,1,0.36,1); }
+  .vetting-step:hover { padding-left: 8px; }
+  .vetting-step-num { transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s; }
+  .vetting-step:hover .vetting-step-num { transform: scale(1.12); box-shadow: 0 4px 14px rgba(255,208,0,0.4); }
+
+  /* Cert cards */
+  .cert-card { transition: border-color 0.3s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s; }
+  .cert-card:hover { transform: translateY(-6px); }
+  .cert-icon { transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); display:block; }
+  .cert-card:hover .cert-icon { transform: scale(1.15) rotate(-5deg); }
+
+  /* Testimonial cards */
+  .testi-card { transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s; }
+  .testi-card:hover { transform: translateY(-6px); box-shadow: 0 14px 36px rgba(0,0,0,0.08); }
+
+  /* Scroll progress */
+  #scroll-bar { position:fixed; top:0; left:0; height:2px; background:var(--yellow); z-index:9999; width:0%; box-shadow:0 0 8px rgba(255,208,0,0.6); }
+
+  /* Nav pulse */
+  @keyframes jx-pulse-yellow { 0%,100%{box-shadow:0 0 0 0 rgba(255,208,0,0.4)} 50%{box-shadow:0 0 0 10px rgba(255,208,0,0)} }
+  .nav-cta { animation: jx-pulse-yellow 3s 2s ease-in-out infinite; }
+  .nav-cta:hover { animation: none; }
+
+  /* Modal */
+  .modal-overlay.active .modal { animation: jx-scale-up 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+
+  /* Footer */
+  .footer-links a { transition: color 0.2s, transform 0.2s; display:inline-block; }
+  .footer-links a:hover { transform: translateX(4px); }
+
+</style>
+</head>
+<body>
+<div id="scroll-bar"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">JX</div>
+    <span class="nav-logo-text">Jux<span>Drive</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#drivers">About Us</a>
+    <a href="services.html">Services</a>
+    <a href="drivers.html" class="active">Drivers</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="contact.html">Contact Us</a>
+  </div>
+  <button class="nav-cta" onclick="openBooking('','')">Book a Driver</button>
+  <div class="nav-hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-left">
+    <div class="breadcrumb"><a href="index.html">Home</a> → Drivers</div>
+    <h1 class="page-title">Meet Our<br><span>Drivers</span></h1>
+    <p class="page-desc">Every JuxDrive chauffeur is hand-picked, professionally trained, fully licensed, and dedicated to delivering the highest standard of service on every journey.</p>
+    <div class="hero-stats-row">
+      <div><div class="h-stat-num">50+</div><div class="h-stat-label">Active Drivers</div></div>
+      <div><div class="h-stat-num">4.9★</div><div class="h-stat-label">Avg. Rating</div></div>
+      <div><div class="h-stat-num">100%</div><div class="h-stat-label">Background Checked</div></div>
+    </div>
+  </div>
+  <div class="page-hero-right">
+    <img class="page-hero-right-img" src="https://images.unsplash.com/photo-1571757111682-b3e81d5c7f09?w=900&q=80" alt="Professional chauffeur">
+  </div>
+</div>
+
+<!-- STANDARDS STRIP -->
+<div class="standards-strip">
+  <div class="standard-item">
+    <div class="standard-icon">🪪</div>
+    <div><div class="standard-title">Fully Licensed</div><div class="standard-sub">Valid DVLA licence, verified</div></div>
+  </div>
+  <div class="standard-item">
+    <div class="standard-icon">🔍</div>
+    <div><div class="standard-title">Background Checked</div><div class="standard-sub">Criminal record screening</div></div>
+  </div>
+  <div class="standard-item">
+    <div class="standard-icon">🎓</div>
+    <div><div class="standard-title">Professionally Trained</div><div class="standard-sub">Customer service & safety training</div></div>
+  </div>
+  <div class="standard-item">
+    <div class="standard-icon">📍</div>
+    <div><div class="standard-title">GPS Trackable</div><div class="standard-sub">Real-time location sharing</div></div>
+  </div>
+  <div class="standard-item">
+    <div class="standard-icon">⭐</div>
+    <div><div class="standard-title">Client Rated</div><div class="standard-sub">Reviewed after every ride</div></div>
+  </div>
+</div>
+
+<!-- DRIVER CARDS -->
+<section class="drivers-section">
+  <div class="drivers-section-head reveal">
+    <span class="section-label">Our Team</span>
+    <h2 style="font-size:clamp(28px,4vw,44px);margin-bottom:12px;">Professional Chauffeurs</h2>
+    <p style="font-size:15px;color:var(--text-muted);max-width:500px;margin:0 auto;line-height:1.75;">Each driver brings experience, professionalism, and a genuine commitment to your comfort and safety.</p>
+  </div>
+  <div class="drivers-grid">
+
+    <!-- Driver 1 -->
+    <div class="driver-card reveal">
+      <div class="driver-card-img">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&q=80" alt="Christian Ansah">
+        <div class="driver-availability available">Available</div>
+        <div class="driver-rating">★ 4.9</div>
+      </div>
+      <div class="driver-card-body">
+        <h3 class="driver-name">Christian Ansah</h3>
+        <div class="driver-title">Senior Chauffeur · 3 Years</div>
+        <div class="driver-tags">
+          <span class="driver-tag yellow">Linscence D</span>
+          <span class="driver-tag">Wedding</span>
+          <span class="driver-tag">Business</span>
+          <span class="driver-tag">Airport</span>
+        </div>
+        <p class="driver-bio">Known as the perfectionist on the ground. Christian is meticulous, always early, and committed to delivering a flawless experience from start to finish on every single journey.</p>
+        <div class="driver-stats">
+          <div><div class="d-stat-num">180+</div><div class="d-stat-label">Rides</div></div>
+          <div><div class="d-stat-num">4.9</div><div class="d-stat-label">Rating</div></div>
+          <div><div class="d-stat-num">3yr</div><div class="d-stat-label">Experience</div></div>
+        </div>
+        <button class="driver-card-btn" onclick="openBooking('Christian Ansah', 'Senior Chauffeur')">Book Christian →</button>
+      </div>
+    </div>
+
+    <!-- Driver 2 -->
+    <div class="driver-card reveal">
+      <div class="driver-card-img">
+        <img src="https://images.unsplash.com/photo-1522529599102-193c0d76b5b6?w=500&q=80" alt="Kofi Kwame">
+        <div class="driver-availability available">Available</div>
+        <div class="driver-rating">★ 5.0</div>
+      </div>
+      <div class="driver-card-body">
+        <h3 class="driver-name">Kofi Kwame</h3>
+        <div class="driver-title">Senior Chauffeur · 5 Years</div>
+        <div class="driver-tags">
+          <span class="driver-tag yellow">Certified Driver</span>
+          <span class="driver-tag">Overnight</span>
+          <span class="driver-tag">VIP</span>
+          <span class="driver-tag">Corporate</span>
+        </div>
+        <p class="driver-bio">Highly experienced and remarkably calm under pressure. Kofi's deep knowledge of Accra's roads and beyond ensures every client arrives safely and on time, every time.</p>
+        <div class="driver-stats">
+          <div><div class="d-stat-num">320+</div><div class="d-stat-label">Rides</div></div>
+          <div><div class="d-stat-num">5.0</div><div class="d-stat-label">Rating</div></div>
+          <div><div class="d-stat-num">5yr</div><div class="d-stat-label">Experience</div></div>
+        </div>
+        <button class="driver-card-btn" onclick="openBooking('Kofi Kwame', 'Senior Chauffeur')">Book Kofi →</button>
+      </div>
+    </div>
+
+    <!-- Driver 3 -->
+    <div class="driver-card reveal">
+      <div class="driver-card-img">
+        <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=500&q=80" alt="Emmanuel Darko">
+        <div class="driver-availability busy">On a Ride</div>
+        <div class="driver-rating">★ 4.8</div>
+      </div>
+      <div class="driver-card-body">
+        <h3 class="driver-name">Emmanuel Darko</h3>
+        <div class="driver-title">Chauffeur · 2 Years</div>
+        <div class="driver-tags">
+          <span class="driver-tag yellow">Linscence B</span>
+          <span class="driver-tag">Errands</span>
+          <span class="driver-tag">Personal</span>
+          <span class="driver-tag">Airport</span>
+        </div>
+        <p class="driver-bio">Warm, personable, and highly reliable. Emmanuel is known for his friendly nature and thorough knowledge of Greater Accra — a favourite for daily errand and personal ride clients.</p>
+        <div class="driver-stats">
+          <div><div class="d-stat-num">145+</div><div class="d-stat-label">Rides</div></div>
+          <div><div class="d-stat-num">4.8</div><div class="d-stat-label">Rating</div></div>
+          <div><div class="d-stat-num">2yr</div><div class="d-stat-label">Experience</div></div>
+        </div>
+        <button class="driver-card-btn" onclick="openBooking('Emmanuel Darko', 'Chauffeur')">Book Emmanuel →</button>
+      </div>
+    </div>
+
+    <!-- Driver 4 -->
+    <div class="driver-card reveal">
+      <div class="driver-card-img">
+        <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&q=80" alt="Nana Agyei">
+        <div class="driver-availability available">Available</div>
+        <div class="driver-rating">★ 4.9</div>
+      </div>
+      <div class="driver-card-body">
+        <h3 class="driver-name">Nana Agyei</h3>
+        <div class="driver-title">Executive Chauffeur · 4 Years</div>
+        <div class="driver-tags">
+          <span class="driver-tag yellow">Executive Cert.</span>
+          <span class="driver-tag">Corporate</span>
+          <span class="driver-tag">Luxury Fleet</span>
+        </div>
+        <p class="driver-bio">Specialising in corporate and executive transportation. Nana is discreet, precise, and impeccably presented — the preferred choice for high-profile business clients across Accra.</p>
+        <div class="driver-stats">
+          <div><div class="d-stat-num">260+</div><div class="d-stat-label">Rides</div></div>
+          <div><div class="d-stat-num">4.9</div><div class="d-stat-label">Rating</div></div>
+          <div><div class="d-stat-num">4yr</div><div class="d-stat-label">Experience</div></div>
+        </div>
+        <button class="driver-card-btn" onclick="openBooking('Nana Agyei', 'Executive Chauffeur')">Book Nana →</button>
+      </div>
+    </div>
+
+    <!-- Driver 5 -->
+    <div class="driver-card reveal">
+      <div class="driver-card-img">
+        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&q=80" alt="Kwabena Mensah">
+        <div class="driver-availability available">Available</div>
+        <div class="driver-rating">★ 4.7</div>
+      </div>
+      <div class="driver-card-body">
+        <h3 class="driver-name">Kwabena Mensah</h3>
+        <div class="driver-title">Chauffeur · 2 Years</div>
+        <div class="driver-tags">
+          <span class="driver-tag yellow">Linscence B</span>
+          <span class="driver-tag">Wedding</span>
+          <span class="driver-tag">Overnight</span>
+        </div>
+        <p class="driver-bio">Patient and highly detail-oriented, Kwabena brings a calm energy to every ride. Particularly popular for wedding and overnight bookings where reliability is non-negotiable.</p>
+        <div class="driver-stats">
+          <div><div class="d-stat-num">110+</div><div class="d-stat-label">Rides</div></div>
+          <div><div class="d-stat-num">4.7</div><div class="d-stat-label">Rating</div></div>
+          <div><div class="d-stat-num">2yr</div><div class="d-stat-label">Experience</div></div>
+        </div>
+        <button class="driver-card-btn" onclick="openBooking('Kwabena Mensah', 'Chauffeur')">Book Kwabena →</button>
+      </div>
+    </div>
+
+    <!-- Driver 6 -->
+    <div class="driver-card reveal">
+      <div class="driver-card-img">
+        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&q=80" alt="Yaw Boateng">
+        <div class="driver-availability busy">On a Ride</div>
+        <div class="driver-rating">★ 4.8</div>
+      </div>
+      <div class="driver-card-body">
+        <h3 class="driver-name">Yaw Boateng</h3>
+        <div class="driver-title">Senior Chauffeur · 3 Years</div>
+        <div class="driver-tags">
+          <span class="driver-tag yellow">Linscence D</span>
+          <span class="driver-tag">VIP</span>
+          <span class="driver-tag">Luxury Fleet</span>
+          <span class="driver-tag">Airport</span>
+        </div>
+        <p class="driver-bio">A composed and confident chauffeur known for exceptional time management. Yaw is a go-to for airport pickups and VIP movements requiring precision and discretion.</p>
+        <div class="driver-stats">
+          <div><div class="d-stat-num">200+</div><div class="d-stat-label">Rides</div></div>
+          <div><div class="d-stat-num">4.8</div><div class="d-stat-label">Rating</div></div>
+          <div><div class="d-stat-num">3yr</div><div class="d-stat-label">Experience</div></div>
+        </div>
+        <button class="driver-card-btn" onclick="openBooking('Yaw Boateng', 'Senior Chauffeur')">Book Yaw →</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- VETTING PROCESS -->
+<section class="vetting-section">
+  <div class="vetting-inner">
+    <div>
+      <span style="display:inline-block;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,208,0,0.8);font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--yellow);">Our Standards</span>
+      <h2 class="vetting-title">How We Vet<br>Every <span>Driver</span></h2>
+      <p class="vetting-sub">We don't just hire drivers — we build a team of trusted professionals. Every JuxDrive chauffeur passes a rigorous multi-step vetting process before their first ride.</p>
+      <div class="vetting-steps">
+        <div class="vetting-step reveal">
+          <div class="vetting-step-num">1</div>
+          <div>
+            <div class="vetting-step-title">Application & Interview</div>
+            <p class="vetting-step-desc">Every candidate submits a formal application and undergoes an in-person interview with our operations team to assess professionalism and attitude.</p>
+          </div>
+        </div>
+        <div class="vetting-step reveal">
+          <div class="vetting-step-num">2</div>
+          <div>
+            <div class="vetting-step-title">Licence & Document Verification</div>
+            <p class="vetting-step-desc">Valid DVLA driving licence, national ID, and any applicable certifications are cross-verified with relevant authorities.</p>
+          </div>
+        </div>
+        <div class="vetting-step reveal">
+          <div class="vetting-step-num">3</div>
+          <div>
+            <div class="vetting-step-title">Background & Criminal Check</div>
+            <p class="vetting-step-desc">A full criminal background screening is conducted to ensure every driver has a clean record before joining the JuxDrive team.</p>
+          </div>
+        </div>
+        <div class="vetting-step reveal">
+          <div class="vetting-step-num">4</div>
+          <div>
+            <div class="vetting-step-title">Driving Assessment & Training</div>
+            <p class="vetting-step-desc">A practical road test followed by training in customer service, safety protocols, and the JuxDrive standard of conduct.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="vetting-image reveal">
+      <img src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=700&q=80" alt="Driver training">
+      <div class="vetting-image-badge">
+        <div class="badge-icon">🛡️</div>
+        <div>
+          <div class="badge-title">100% Vetted & Insured</div>
+          <div class="badge-sub">Every driver on our platform is fully screened and covered</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section class="certs-section">
+  <div class="reveal" style="text-align:center;">
+    <span class="section-label">Credentials</span>
+    <h2 style="font-size:clamp(26px,3.5vw,40px);margin-bottom:12px;">Driver Certifications</h2>
+    <p style="font-size:15px;color:var(--text-muted);max-width:480px;margin:0 auto;line-height:1.75;">Every qualification our drivers hold to keep you safe and your journey compliant.</p>
+  </div>
+  <div class="certs-grid">
+    <div class="cert-card reveal">
+      <div class="cert-icon">🪪</div>
+      <h3 class="cert-title">DVLA Licence</h3>
+      <p class="cert-desc">Valid Ghana DVLA professional driving licence, Classes B and D, verified at hiring and annually renewed.</p>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">🚑</div>
+      <h3 class="cert-title">First Aid Certified</h3>
+      <p class="cert-desc">Basic first aid and emergency response training completed by all senior drivers on our team.</p>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">🔐</div>
+      <h3 class="cert-title">Security Awareness</h3>
+      <p class="cert-desc">Training in passenger safety protocols, route risk assessment, and emergency contact procedures.</p>
+    </div>
+    <div class="cert-card reveal">
+      <div class="cert-icon">⭐</div>
+      <h3 class="cert-title">Service Excellence</h3>
+      <p class="cert-desc">JuxDrive internal certification in professional conduct, communication, and client satisfaction standards.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENT TESTIMONIALS ABOUT DRIVERS -->
+<section class="driver-testimonials">
+  <div class="reveal" style="text-align:center;">
+    <span class="section-label">Client Reviews</span>
+    <h2 style="font-size:clamp(26px,3.5vw,40px);margin-bottom:12px;">What Clients Say About Our Drivers</h2>
+    <p style="font-size:15px;color:var(--text-muted);max-width:480px;margin:0 auto;line-height:1.75;">Real reviews from real JuxDrive clients.</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Christian was extraordinary. He arrived 15 minutes early for our wedding, was dressed immaculately, and handled every detail without being asked. Absolute 5 stars."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AB</div>
+        <div><div class="testi-name">Ama Boateng</div><div class="testi-service">Wedding · Accra</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Kofi drove me to Cape Coast and back — a long overnight trip. He was professional the entire time, knew every route, and made me feel completely safe. Will always request him."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">KA</div>
+        <div><div class="testi-name">Kweku Asante</div><div class="testi-service">Overnight Trip · Cape Coast</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Nana picked me up from Kotoka at 2am with a smile, helped with all my bags, and got me home safely. That kind of professionalism at that hour is rare. JuxDrive nailed it."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">EO</div>
+        <div><div class="testi-name">Efua Owusu</div><div class="testi-service">Airport Pickup · Kotoka</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2 class="cta-band-title">Ready to ride with a JuxDrive professional?</h2>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;">
+    <button class="btn-black" onclick="openBooking('','')">Book a Driver Now</button>
+    <a href="services.html" style="background:transparent;color:var(--black);padding:13px 32px;border-radius:4px;font-size:14px;font-weight:500;border:1.5px solid rgba(0,0,0,0.3);cursor:pointer;display:inline-block;">View Services</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="footer-logo-mark">JX</div><span class="footer-logo-name">JuxDrive</span></div>
+      <p>Premium chauffeur services across Ghana. Professional, safe, and reliable transportation for all occasions.</p>
+    </div>
+    <div class="footer-col"><h4>Services</h4><div class="footer-links"><a href="services.html">Wedding Rides</a><a href="services.html">Business Trips</a><a href="services.html">Overnight Trips</a><a href="services.html">Airport Pickups</a></div></div>
+    <div class="footer-col"><h4>Company</h4><div class="footer-links"><a href="index.html">Home</a><a href="drivers.html">Our Drivers</a><a href="fleet.html">Our Fleet</a><a href="contact.html">Contact</a></div></div>
+    <div class="footer-col"><h4>Contact</h4><p style="font-size:13px;line-height:1.9;">📞 +(233) 57 400 2145<br>✉️ info@juxdrive.org<br>📍 East Legon, Accra, Ghana</p></div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom"><span class="footer-copy">© 2025 JuxDrive Chauffeuring. All rights reserved.</span></div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()">×</button>
+    <div class="modal-driver-banner" id="modal-driver-banner">
+      <img class="modal-driver-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&q=80" alt="Driver" id="modal-driver-img">
+      <div>
+        <div class="modal-driver-name" id="modal-driver-name">Select a Driver</div>
+        <div class="modal-driver-role" id="modal-driver-role">JuxDrive Chauffeur</div>
+      </div>
+    </div>
+    <div class="modal-form">
+      <div class="modal-row">
+        <div><label class="modal-label">Full Name</label><input class="modal-input" type="text" placeholder="Your name"></div>
+        <div><label class="modal-label">Phone</label><input class="modal-input" type="tel" placeholder="+233 XX XXX XXXX"></div>
+      </div>
+      <div><label class="modal-label">Email</label><input class="modal-input" type="email" placeholder="you@email.com"></div>
+      <div class="modal-row">
+        <div><label class="modal-label">Pickup Date</label><input class="modal-input" type="date"></div>
+        <div><label class="modal-label">Service Type</label>
+          <select class="modal-input"><option>Wedding</option><option>Business Trip</option><option>Airport Pickup</option><option>Overnight Trip</option><option>Errand / Personal</option></select>
+        </div>
+      </div>
+      <div><label class="modal-label">Pickup Location</label><input class="modal-input" type="text" placeholder="Your pickup address"></div>
+      <div><label class="modal-label">Drop-off Location</label><input class="modal-input" type="text" placeholder="Destination address"></div>
+      <button class="btn-primary" style="width:100%;padding:15px;" onclick="confirmBooking()">Confirm Booking →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient('https://eyuoejjewuzxouirymze.supabase.co','sb_publishable_TtgDPqo5tnX-bpiu3AclgQ_Jzg6M-y_');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+  }, { threshold: 0.08, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => observer.observe(el));
+
+  // Stagger driver cards
+  const driverObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const cards = document.querySelectorAll('.driver-card');
+        cards.forEach((c, i) => {
+          c.style.opacity = '0'; c.style.transform = 'translateY(32px)';
+          c.style.transition = `opacity 0.7s ${i*0.1}s cubic-bezier(0.22,1,0.36,1), transform 0.7s ${i*0.1}s cubic-bezier(0.22,1,0.36,1)`;
+          setTimeout(() => { c.style.opacity='1'; c.style.transform='translateY(0)'; }, i*100 + 50);
+        });
+        driverObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.05 });
+  const driversGrid = document.querySelector('.drivers-grid');
+  if (driversGrid) driverObserver.observe(driversGrid);
+
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('scroll-bar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%';
+  }, { passive: true });
+
+  // Nav solidify
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    navEl.style.background = window.scrollY > 60 ? 'rgba(10,10,10,1)' : 'rgba(10,10,10,0.97)';
+  }, { passive: true });
+
+  // Animated stat counters in hero
+  const statsObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.h-stat-num');
+        const targets = [50, 4.9, 100];
+        const suffixes = ['+', '★', '%'];
+        nums.forEach((el, i) => {
+          const isDecimal = targets[i] % 1 !== 0;
+          let start = null;
+          const step = (ts) => {
+            if (!start) start = ts;
+            const p = Math.min((ts - start) / 1600, 1);
+            const ease = 1 - Math.pow(1 - p, 3);
+            el.textContent = (isDecimal ? (ease * targets[i]).toFixed(1) : Math.floor(ease * targets[i])) + suffixes[i];
+            if (p < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        });
+        statsObs.disconnect();
+      }
+    });
+  }, { threshold: 0.6 });
+  const heroStats = document.querySelector('.hero-stats-row');
+  if (heroStats) statsObs.observe(heroStats);
+
+  function openBooking(name, role) {
+    if (name) { document.getElementById('modal-driver-name').textContent = name; document.getElementById('modal-driver-role').textContent = role; }
+    document.getElementById('booking-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeBooking() { document.getElementById('booking-modal').classList.remove('active'); document.body.style.overflow = ''; }
+
+  async function confirmBooking() {
+    const inputs  = document.querySelectorAll('.modal-input');
+    const name    = inputs[0].value.trim();
+    const phone   = inputs[1].value.trim();
+    const email   = inputs[2].value.trim();
+    const date    = inputs[3].value;
+    const purpose = inputs[4].value;
+    const from    = inputs[5].value.trim();
+    const to      = inputs[6].value.trim();
+    const driver  = document.getElementById('modal-driver-name').textContent;
+
+    if (!name || !phone || !date || !from || !to) { alert('Please fill in all required fields.'); return; }
+
+    const btn = document.querySelector('.modal .btn-primary');
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      const { error } = await supabase.from('bookings').insert([{
+        full_name: name, phone, email,
+        pickup_date: date, purpose,
+        pickup_location: from, dropoff_location: to,
+        preferred_driver: driver !== 'Select a Driver' ? driver : null,
+        vehicle_option: 'personal_car', status: 'pending'
+      }]);
+      if (error) throw error;
+      document.querySelector('.modal').innerHTML = `<div style="text-align:center;padding:48px 20px"><div style="font-size:56px;margin-bottom:16px">✅</div><h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:10px">Booking Saved!</h2><p style="color:#666;font-size:14px;line-height:1.75;margin-bottom:28px">Thank you, <strong>${name}</strong>. We'll call you within 30 minutes to confirm your driver and all trip details.</p><button style="background:var(--yellow);color:var(--black);padding:12px 32px;border:none;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer" onclick="closeBooking()">Done</button></div>`;
+    } catch(err) {
+      btn.textContent = 'Confirm Booking →'; btn.disabled = false;
+      alert('Could not save booking. Please call +(233) 57 400 2145.'); console.error(err);
+    }
+  }
+
+  window.openBooking = openBooking;
+  window.closeBooking = closeBooking;
+  window.confirmBooking = confirmBooking;
+  document.getElementById('booking-modal').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
+</script>
+</body>
+</html>

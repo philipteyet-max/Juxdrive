@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Services — JuxDrive Chauffeuring</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD000;
+    --yellow-dark: #E6BB00;
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --gray: #F5F5F0;
+    --text-muted: #555;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--black); background: var(--white); overflow-x: hidden; }
+  h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(10,10,10,0.97); backdrop-filter: blur(8px);
+    padding: 0 5%; display: flex; align-items: center; justify-content: space-between;
+    height: 68px; border-bottom: 1px solid rgba(255,208,0,0.15);
+  }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 38px; height: 38px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 900; font-size: 18px; color: var(--black); }
+  .nav-logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; color: var(--white); letter-spacing: 1px; }
+  .nav-logo-text span { color: var(--yellow); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.8); font-size: 13.5px; font-weight: 400; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--yellow); }
+  .nav-cta { background: var(--yellow); color: var(--black); padding: 9px 22px; border-radius: 4px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--yellow-dark); }
+
+  /* PAGE HERO */
+  .page-hero {
+    min-height: 420px; background: var(--black); display: flex; align-items: flex-end;
+    padding: 68px 8% 72px; position: relative; overflow: hidden;
+  }
+  .page-hero-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(120deg, #0a0a0a 50%, #1a1400 100%);
+  }
+  .page-hero-accent {
+    position: absolute; right: 0; top: 0; width: 40%;
+    height: 100%; background: var(--yellow);
+    clip-path: polygon(40% 0%, 100% 0%, 100% 100%, 0% 100%);
+    opacity: 0.06;
+  }
+  .page-hero-line {
+    position: absolute; left: 8%; bottom: 0;
+    width: 80px; height: 4px; background: var(--yellow);
+  }
+  .page-hero-content { position: relative; z-index: 2; }
+  .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 16px; letter-spacing: 0.5px; }
+  .breadcrumb a { color: var(--yellow); }
+  .page-title { font-size: clamp(42px, 6vw, 80px); color: var(--white); line-height: 1.0; margin-bottom: 16px; }
+  .page-title span { color: var(--yellow); }
+  .page-desc { font-size: 16px; color: rgba(255,255,255,0.55); max-width: 520px; line-height: 1.75; }
+
+  /* SECTION BASE */
+  .section-label { display: inline-block; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--yellow-dark); font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--yellow); }
+  .section-title { font-size: clamp(26px, 3.5vw, 42px); line-height: 1.15; margin-bottom: 16px; }
+  .section-sub { font-size: 15px; color: var(--text-muted); line-height: 1.75; }
+  .btn-primary { background: var(--yellow); color: var(--black); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-block; }
+  .btn-primary:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--black); padding: 13px 32px; border-radius: 4px; font-size: 14px; font-weight: 500; border: 1.5px solid #ccc; cursor: pointer; transition: all 0.2s; display: inline-block; }
+  .btn-outline:hover { border-color: var(--yellow-dark); color: var(--yellow-dark); }
+
+  /* SERVICES INTRO */
+  .intro-section { padding: 80px 8%; background: var(--white); }
+  .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .intro-img { border-radius: 10px; overflow: hidden; }
+  .intro-img img { width: 100%; height: 420px; object-fit: cover; }
+  .intro-text { }
+  .intro-bullets { margin-top: 28px; display: flex; flex-direction: column; gap: 14px; }
+  .intro-bullet { display: flex; gap: 14px; align-items: flex-start; }
+  .bullet-dot { width: 8px; height: 8px; background: var(--yellow); border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+  .bullet-text { font-size: 14.5px; color: #444; line-height: 1.65; }
+
+  /* SERVICE CARDS */
+  .services-section { padding: 80px 8%; background: var(--gray); }
+  .services-section-title { text-align: center; margin-bottom: 60px; }
+  .services-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+  .service-card {
+    background: var(--white); border-radius: 12px; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s; border: 1px solid #eee;
+  }
+  .service-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.1); }
+  .service-card-img { height: 260px; overflow: hidden; position: relative; }
+  .service-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+  .service-card:hover .service-card-img img { transform: scale(1.06); }
+  .service-card-num {
+    position: absolute; top: 20px; left: 20px;
+    width: 40px; height: 40px; background: var(--yellow); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--black);
+  }
+  .service-card-body { padding: 28px 28px 32px; }
+  .service-card-title { font-size: 24px; margin-bottom: 10px; }
+  .service-card-desc { font-size: 14px; color: var(--text-muted); line-height: 1.75; margin-bottom: 20px; }
+  .service-card-features { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .service-feature { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #444; }
+  .feature-check { width: 20px; height: 20px; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+
+  /* PROCESS SECTION */
+  .process-section { padding: 80px 8%; background: var(--black); }
+  .process-title { color: var(--white); text-align: center; margin-bottom: 60px; }
+  .process-title .section-label { color: rgba(255,208,0,0.8); border-bottom-color: var(--yellow); }
+  .process-title h2 { color: var(--white); }
+  .process-timeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; position: relative; }
+  .process-timeline::before {
+    content: ''; position: absolute; top: 28px; left: 12.5%; right: 12.5%;
+    height: 2px; background: rgba(255,208,0,0.2); z-index: 0;
+  }
+  .process-step { text-align: center; padding: 0 20px; position: relative; z-index: 1; }
+  .process-dot {
+    width: 56px; height: 56px; background: var(--black); border: 2px solid var(--yellow);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 20px; font-family: 'Playfair Display', serif;
+    font-size: 22px; font-weight: 700; color: var(--yellow);
+    transition: background 0.2s;
+  }
+  .process-step:hover .process-dot { background: var(--yellow); color: var(--black); }
+  .process-step-title { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--white); margin-bottom: 8px; }
+  .process-step-desc { font-size: 13px; color: rgba(255,255,255,0.45); line-height: 1.65; }
+
+  /* PRICING SECTION */
+  .pricing-section { padding: 80px 8%; background: var(--white); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 52px; }
+  .pricing-card {
+    border: 1.5px solid #eee; border-radius: 12px; padding: 36px 28px;
+    transition: border-color 0.2s; position: relative;
+  }
+  .pricing-card.featured { border-color: var(--yellow); background: #fffde6; }
+  .pricing-badge {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--yellow); color: var(--black); padding: 4px 18px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap;
+  }
+  .pricing-tier { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: #999; font-weight: 600; margin-bottom: 12px; }
+  .pricing-name { font-size: 24px; margin-bottom: 4px; }
+  .pricing-price { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+  .pricing-price span { font-size: 16px; font-weight: 400; font-family: 'DM Sans', sans-serif; color: #888; }
+  .pricing-sub { font-size: 13px; color: #888; margin-bottom: 28px; }
+  .pricing-divider { border: none; border-top: 1px solid #eee; margin-bottom: 24px; }
+  .pricing-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+  .pricing-feature { display: flex; gap: 10px; align-items: center; font-size: 13.5px; color: #444; }
+  .p-check { color: var(--yellow-dark); font-weight: 700; font-size: 14px; }
+
+  /* CTA BAND */
+  .cta-band { background: var(--yellow); padding: 72px 8%; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .cta-band-title { font-size: clamp(26px, 3.5vw, 44px); color: var(--black); max-width: 520px; line-height: 1.2; }
+  .cta-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-black { background: var(--black); color: var(--white); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; display: inline-block; }
+  .btn-black:hover { background: #222; }
+
+  /* FOOTER */
+  footer { background: #060606; border-top: 1px solid rgba(255,208,0,0.1); padding: 60px 8% 32px; color: rgba(255,255,255,0.7); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 48px; }
+  .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .footer-logo-mark { width: 34px; height: 34px; background: var(--yellow); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 900; color: var(--black); }
+  .footer-logo-name { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); font-weight: 700; }
+  .footer-about p { font-size: 13.5px; line-height: 1.75; max-width: 280px; }
+  .footer-col h4 { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 13.5px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 28px; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 12.5px; color: rgba(255,255,255,0.3); }
+
+  /* ANIMATE */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .page-hero-content { animation: fadeUp 0.6s ease both; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--white); border-radius: 12px; padding: 40px; max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 20px; font-size: 24px; cursor: pointer; background: none; border: none; color: #888; }
+  .modal-title { font-size: 26px; margin-bottom: 6px; }
+  .modal-sub { font-size: 13.5px; color: #888; margin-bottom: 28px; }
+  .modal-form { display: flex; flex-direction: column; gap: 14px; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-input { border: 1.5px solid #e0e0e0; border-radius: 6px; padding: 13px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 100%; outline: none; transition: border-color 0.2s; }
+  .modal-input:focus { border-color: var(--yellow); }
+  .modal-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 4px; display: block; }
+
+  @media (max-width: 768px) {
+    .intro-grid, .services-cards, .process-timeline, .pricing-grid { grid-template-columns: 1fr; }
+    .process-timeline::before { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .nav-links { display: none; }
+    .cta-band { text-align: center; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">JX</div>
+    <span class="nav-logo-text">Jux<span>Drive</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#drivers">About Us</a>
+    <a href="services.html" class="active">Services</a>
+    <a href="index.html#drivers">Drivers</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="index.html#contact">Contact Us</a>
+  </div>
+  <button class="nav-cta" onclick="openBooking()">Book a Driver</button>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg"></div>
+  <div class="page-hero-accent"></div>
+  <div class="page-hero-line"></div>
+  <div class="page-hero-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> → Services</div>
+    <h1 class="page-title">What We <span>Offer</span></h1>
+    <p class="page-desc">From weddings to airport pickups — our professional chauffeurs deliver comfort, punctuality, and elegance on every journey.</p>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro-section">
+  <div class="intro-grid">
+    <div class="intro-img reveal">
+      <img src="https://images.unsplash.com/photo-1571757111682-b3e81d5c7f09?w=800&q=80" alt="Professional chauffeur">
+    </div>
+    <div class="intro-text reveal">
+      <span class="section-label">Our Promise</span>
+      <h2 class="section-title">Experienced Staff & Professionally Trained Chauffeurs</h2>
+      <p class="section-sub">Don't force yourself to drive — relax in your own car while we chauffeur you to your destination in comfort and in style. We deliver an extensive service to make life easy for you.</p>
+      <div class="intro-bullets">
+        <div class="intro-bullet"><div class="bullet-dot"></div><div class="bullet-text">Real-time SMS and email updates on your driver's location throughout your journey.</div></div>
+        <div class="intro-bullet"><div class="bullet-dot"></div><div class="bullet-text">All drivers are fully licensed, vetted, and trained to the highest professional standard.</div></div>
+        <div class="intro-bullet"><div class="bullet-dot"></div><div class="bullet-text">Available for personal cars or choose from our premium fleet — your choice.</div></div>
+        <div class="intro-bullet"><div class="bullet-dot"></div><div class="bullet-text">Operating across Accra, Greater Accra Region, and beyond.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICE CARDS -->
+<section class="services-section">
+  <div class="services-section-title reveal">
+    <span class="section-label">All Services</span>
+    <h2 class="section-title">Choose Your Service</h2>
+    <p class="section-sub" style="max-width:500px; margin:0 auto;">Every service is tailored to your needs with the same commitment to excellence.</p>
+  </div>
+  <div class="services-cards">
+
+    <div class="service-card reveal">
+      <div class="service-card-img">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=700&q=80" alt="Wedding">
+        <div class="service-card-num">1</div>
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Wedding Rides</h3>
+        <p class="service-card-desc">Make your most special day unforgettable. Our chauffeurs arrive early, dressed professionally, and ensure you reach every venue in elegance and on time — no stress, just perfection.</p>
+        <div class="service-card-features">
+          <div class="service-feature"><div class="feature-check">✓</div>Pre-wedding venue coordination</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Professionally dressed chauffeur</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Live location updates for guests</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Available for full-day booking</div>
+        </div>
+        <button class="btn-primary" onclick="openBooking()">Book Now</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-card-img">
+        <img src="https://images.unsplash.com/photo-1560264280-88b68371db39?w=700&q=80" alt="Business Trips">
+        <div class="service-card-num">2</div>
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Business Trips</h3>
+        <p class="service-card-desc">Arrive at meetings, conferences, and corporate events composed and on time. We handle the driving so you can review documents, take calls, and walk in ready to lead.</p>
+        <div class="service-card-features">
+          <div class="service-feature"><div class="feature-check">✓</div>Corporate billing available</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Quiet, distraction-free journeys</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Multi-stop trip scheduling</div>
+          <div class="service-feature"><div class="feature-check">✓</div>SMS arrival alerts for your team</div>
+        </div>
+        <button class="btn-primary" onclick="openBooking()">Book Now</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-card-img">
+        <img src="https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=700&q=80" alt="Overnight Trips">
+        <div class="service-card-num">3</div>
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Overnight Trips</h3>
+        <p class="service-card-desc">Long distances or late-night journeys don't have to be stressful. Our experienced overnight drivers are available for extended trips to any destination across Ghana.</p>
+        <div class="service-card-features">
+          <div class="service-feature"><div class="feature-check">✓</div>Inter-city travel covered</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Driver accommodation arranged</div>
+          <div class="service-feature"><div class="feature-check">✓</div>24/7 dispatch support</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Emergency contact on standby</div>
+        </div>
+        <button class="btn-primary" onclick="openBooking()">Book Now</button>
+      </div>
+    </div>
+
+    <div class="service-card reveal">
+      <div class="service-card-img">
+        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=700&q=80" alt="Airport Pickups">
+        <div class="service-card-num">4</div>
+      </div>
+      <div class="service-card-body">
+        <h3 class="service-card-title">Airport Pickups</h3>
+        <p class="service-card-desc">We track your flight in real time. Whether you land early, late, or right on time — your driver will be there, sign in hand, ready to take your luggage. No waiting. No stress.</p>
+        <div class="service-card-features">
+          <div class="service-feature"><div class="feature-check">✓</div>Real-time flight tracking</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Meet-and-greet at arrivals</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Luggage assistance</div>
+          <div class="service-feature"><div class="feature-check">✓</div>Kotoka & Kumasi airports covered</div>
+        </div>
+        <button class="btn-primary" onclick="openBooking()">Book Now</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="process-title reveal">
+    <span class="section-label" style="color:rgba(255,208,0,0.8); border-bottom-color:var(--yellow);">Simple & Fast</span>
+    <h2 class="section-title" style="color:var(--white);">How It Works</h2>
+  </div>
+  <div class="process-timeline">
+    <div class="process-step reveal">
+      <div class="process-dot">1</div>
+      <div class="process-step-title">Choose a Service</div>
+      <p class="process-step-desc">Select from Wedding, Business, Overnight, or Airport Pickup based on your needs.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="process-dot">2</div>
+      <div class="process-step-title">Fill Your Details</div>
+      <p class="process-step-desc">Provide your pickup info, dates, and vehicle preference in our quick booking form.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="process-dot">3</div>
+      <div class="process-step-title">We Confirm</div>
+      <p class="process-step-desc">A JuxDrive team member calls you within 30 minutes to confirm your booking details.</p>
+    </div>
+    <div class="process-step reveal">
+      <div class="process-dot">4</div>
+      <div class="process-step-title">Enjoy the Ride</div>
+      <p class="process-step-desc">Sit back and relax. Live SMS and email updates keep you informed at every step.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="reveal" style="text-align:center;">
+    <span class="section-label">Transparent Rates</span>
+    <h2 class="section-title">Simple, Honest Pricing</h2>
+    <p class="section-sub" style="max-width:480px; margin:0 auto;">Starting rates for common services. Final price confirmed at booking based on distance and vehicle selection.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Standard</div>
+      <h3 class="pricing-name">Errand & Personal</h3>
+      <div class="pricing-price">GH₵80 <span>base fare</span></div>
+      <p class="pricing-sub">+ GH₵2.50 per km</p>
+      <hr class="pricing-divider">
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="p-check">✓</span> Personal car chauffeur</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> SMS location updates</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Up to 4 hours</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Greater Accra coverage</div>
+      </div>
+      <button class="btn-outline" onclick="openBooking()">Book Now</button>
+    </div>
+    <div class="pricing-card featured reveal">
+      <div class="pricing-badge">Most Popular</div>
+      <div class="pricing-tier">Premium</div>
+      <h3 class="pricing-name">Wedding & Events</h3>
+      <div class="pricing-price">GH₵300 <span>base fare</span></div>
+      <p class="pricing-sub">Full-day rate available</p>
+      <hr class="pricing-divider">
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="p-check">✓</span> Professionally dressed driver</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Multi-venue coordination</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Fleet vehicle option</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Full-day availability</div>
+      </div>
+      <button class="btn-primary" onclick="openBooking()">Book Now</button>
+    </div>
+    <div class="pricing-card reveal">
+      <div class="pricing-tier">Executive</div>
+      <h3 class="pricing-name">Business & Airport</h3>
+      <div class="pricing-price">GH₵150 <span>base fare</span></div>
+      <p class="pricing-sub">+ GH₵4 per km (premium vehicle)</p>
+      <hr class="pricing-divider">
+      <div class="pricing-features">
+        <div class="pricing-feature"><span class="p-check">✓</span> Flight tracking included</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Meet & greet service</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Premium fleet vehicle</div>
+        <div class="pricing-feature"><span class="p-check">✓</span> Corporate billing</div>
+      </div>
+      <button class="btn-outline" onclick="openBooking()">Book Now</button>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2 class="cta-band-title">Ready to experience the JuxDrive difference?</h2>
+  <div class="cta-btns">
+    <button class="btn-black" onclick="openBooking()">Book a Driver Now</button>
+    <a href="index.html#contact" class="btn-outline">Contact Us</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <div class="footer-logo-mark">JX</div>
+        <span class="footer-logo-name">JuxDrive</span>
+      </div>
+      <p>Premium chauffeur services across Ghana. Professional, safe, and reliable transportation for all occasions.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <div class="footer-links">
+        <a href="#">Wedding Rides</a>
+        <a href="#">Business Trips</a>
+        <a href="#">Overnight Trips</a>
+        <a href="#">Airport Pickups</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#drivers">About Us</a>
+        <a href="fleet.html">Our Fleet</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p style="font-size:13px; line-height:1.9;">📞 +(233) 57 400 2145<br>✉️ info@juxdrive.org<br>📍 East Legon, Accra, Ghana</p>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 JuxDrive Chauffeuring. All rights reserved.</span>
+  </div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()">×</button>
+    <h2 class="modal-title">Book a Driver</h2>
+    <p class="modal-sub">Fill in your details and we'll confirm within 30 minutes.</p>
+    <div class="modal-form">
+      <div class="modal-row">
+        <div><label class="modal-label">Full Name</label><input class="modal-input" type="text" placeholder="Your name"></div>
+        <div><label class="modal-label">Phone</label><input class="modal-input" type="tel" placeholder="+233 XX XXX XXXX"></div>
+      </div>
+      <div><label class="modal-label">Email</label><input class="modal-input" type="email" placeholder="you@email.com"></div>
+      <div class="modal-row">
+        <div><label class="modal-label">Date</label><input class="modal-input" type="date"></div>
+        <div><label class="modal-label">Service</label>
+          <select class="modal-input">
+            <option>Wedding</option><option>Business Trip</option>
+            <option>Overnight Trip</option><option>Airport Pickup</option>
+          </select>
+        </div>
+      </div>
+      <div><label class="modal-label">Pickup Location</label><input class="modal-input" type="text" placeholder="Your pickup address"></div>
+      <div><label class="modal-label">Drop-off Location</label><input class="modal-input" type="text" placeholder="Destination address"></div>
+      <button class="btn-primary" style="width:100%; padding:15px;" onclick="confirmBooking()">Confirm Booking →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient('https://eyuoejjewuzxouirymze.supabase.co','sb_publishable_TtgDPqo5tnX-bpiu3AclgQ_Jzg6M-y_');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  function openBooking() { document.getElementById('booking-modal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+  function closeBooking() { document.getElementById('booking-modal').classList.remove('active'); document.body.style.overflow = ''; }
+
+  async function confirmBooking() {
+    const fields = document.querySelectorAll('.modal-input');
+    const name    = fields[0].value.trim();
+    const phone   = fields[1].value.trim();
+    const email   = fields[2].value.trim();
+    const date    = fields[3].value;
+    const purpose = fields[4].value;
+    const from    = fields[5].value.trim();
+    const to      = fields[6].value.trim();
+
+    if (!name || !phone || !date || !from || !to || !purpose) {
+      alert('Please fill in all fields.'); return;
+    }
+    const btn = document.querySelector('.modal .btn-primary');
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      const { error } = await supabase.from('bookings').insert([{
+        full_name: name, phone, email,
+        pickup_date: date, purpose,
+        pickup_location: from, dropoff_location: to,
+        status: 'pending'
+      }]);
+      if (error) throw error;
+      document.querySelector('.modal').innerHTML = `<div style="text-align:center;padding:48px 20px"><div style="font-size:56px;margin-bottom:16px">✅</div><h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:10px">Booking Saved!</h2><p style="color:#666;font-size:14px;line-height:1.75;margin-bottom:28px">Thank you, <strong>${name}</strong>. We'll call you within 30 minutes to confirm your driver.</p><button style="background:var(--yellow);color:var(--black);padding:12px 28px;border:none;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer" onclick="closeBooking()">Done</button></div>`;
+    } catch(err) {
+      btn.textContent = 'Confirm Booking →'; btn.disabled = false;
+      alert('Could not save booking. Please call +(233) 57 400 2145 directly.'); console.error(err);
+    }
+  }
+
+  window.openBooking = openBooking;
+  window.closeBooking = closeBooking;
+  window.confirmBooking = confirmBooking;
+  document.getElementById('booking-modal').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
+</script>
+</body>
+</html>
