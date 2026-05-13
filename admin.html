@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JuxDrive Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD000;
+    --yellow-dark: #E6BB00;
+    --black: #0A0A0A;
+    --dark: #111214;
+    --dark2: #1a1c1f;
+    --dark3: #222427;
+    --border: rgba(255,255,255,0.07);
+    --white: #FFFFFF;
+    --text: rgba(255,255,255,0.85);
+    --text-muted: rgba(255,255,255,0.4);
+    --green: #22c55e;
+    --orange: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+  }
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:var(--black); color:var(--text); min-height:100vh; overflow-x:hidden; }
+  h1,h2,h3 { font-family:'Playfair Display',serif; }
+  a { text-decoration:none; color:inherit; }
+
+  /* ─── LOGIN SCREEN ─── */
+  #login-screen {
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    background:var(--black);
+    background-image: radial-gradient(ellipse at 20% 50%, rgba(255,208,0,0.06) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 20%, rgba(255,208,0,0.04) 0%, transparent 50%);
+  }
+  .login-card {
+    background:var(--dark2); border:1px solid var(--border);
+    border-radius:16px; padding:48px 44px; width:100%; max-width:420px;
+    box-shadow:0 32px 80px rgba(0,0,0,0.6);
+  }
+  .login-logo { display:flex; align-items:center; gap:12px; margin-bottom:36px; }
+  .login-logo-mark { width:44px; height:44px; background:var(--yellow); border-radius:10px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700; font-size:20px; color:var(--black); }
+  .login-logo-text { font-family:'Playfair Display',serif; font-size:22px; color:var(--white); }
+  .login-logo-text span { color:var(--yellow); }
+  .login-badge { font-size:11px; background:rgba(255,208,0,0.12); color:var(--yellow); border:1px solid rgba(255,208,0,0.2); padding:3px 10px; border-radius:20px; letter-spacing:1px; text-transform:uppercase; font-weight:600; margin-bottom:28px; display:inline-block; }
+  .login-title { font-size:28px; color:var(--white); margin-bottom:6px; }
+  .login-sub { font-size:14px; color:var(--text-muted); margin-bottom:32px; }
+  .login-field { margin-bottom:16px; }
+  .login-label { font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; display:block; }
+  .login-input {
+    width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+    color:var(--white); padding:13px 16px; border-radius:8px; font-size:14px;
+    font-family:'DM Sans',sans-serif; outline:none; transition:border-color 0.2s;
+  }
+  .login-input:focus { border-color:var(--yellow); }
+  .login-input::placeholder { color:rgba(255,255,255,0.2); }
+  .login-btn {
+    width:100%; background:var(--yellow); color:var(--black); padding:14px;
+    border:none; border-radius:8px; font-size:15px; font-weight:700; cursor:pointer;
+    font-family:'DM Sans',sans-serif; transition:all 0.2s; margin-top:8px;
+  }
+  .login-btn:hover { background:var(--yellow-dark); transform:translateY(-1px); }
+  .login-error { background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#fca5a5; padding:12px 16px; border-radius:8px; font-size:13px; margin-top:12px; display:none; }
+
+  /* ─── APP SHELL ─── */
+  #app { display:none; flex-direction:column; min-height:100vh; }
+
+  /* ─── TOPBAR ─── */
+  .topbar {
+    position:fixed; top:0; left:240px; right:0; height:64px; z-index:100;
+    background:rgba(10,10,10,0.95); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between; padding:0 28px;
+  }
+  .topbar-left { display:flex; align-items:center; gap:16px; }
+  .topbar-page-title { font-size:16px; font-weight:600; color:var(--white); }
+  .topbar-right { display:flex; align-items:center; gap:16px; }
+  .topbar-badge {
+    background:rgba(255,208,0,0.12); color:var(--yellow); border:1px solid rgba(255,208,0,0.2);
+    padding:5px 14px; border-radius:20px; font-size:12px; font-weight:600;
+  }
+  #pending-badge { background:rgba(239,68,68,0.15); color:#fca5a5; border-color:rgba(239,68,68,0.3); display:none; }
+  .logout-btn {
+    background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--text-muted);
+    padding:7px 16px; border-radius:6px; font-size:13px; cursor:pointer; transition:all 0.2s;
+    font-family:'DM Sans',sans-serif;
+  }
+  .logout-btn:hover { border-color:var(--red); color:#fca5a5; }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar {
+    position:fixed; top:0; left:0; width:240px; height:100vh; z-index:200;
+    background:var(--dark2); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; padding:0;
+    overflow-y:auto;
+  }
+  .sidebar-logo { padding:20px 20px 16px; display:flex; align-items:center; gap:10px; border-bottom:1px solid var(--border); }
+  .sidebar-logo-mark { width:36px; height:36px; background:var(--yellow); border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Playfair Display',serif; font-weight:700; font-size:16px; color:var(--black); flex-shrink:0; }
+  .sidebar-logo-text { font-family:'Playfair Display',serif; font-size:17px; color:var(--white); font-weight:700; }
+  .sidebar-logo-text span { color:var(--yellow); }
+  .sidebar-admin-tag { font-size:10px; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-top:1px; }
+  .sidebar-section { padding:20px 12px 8px; }
+  .sidebar-section-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); font-weight:600; padding:0 8px; margin-bottom:6px; }
+  .nav-item {
+    display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:8px;
+    cursor:pointer; transition:all 0.2s; color:var(--text-muted); font-size:14px;
+    font-weight:500; margin-bottom:2px; position:relative;
+  }
+  .nav-item:hover { background:rgba(255,255,255,0.05); color:var(--text); }
+  .nav-item.active { background:rgba(255,208,0,0.1); color:var(--yellow); }
+  .nav-item.active::before { content:''; position:absolute; left:0; top:50%; transform:translateY(-50%); width:3px; height:60%; background:var(--yellow); border-radius:0 2px 2px 0; }
+  .nav-icon { font-size:16px; width:20px; text-align:center; flex-shrink:0; }
+  .nav-count { margin-left:auto; background:var(--red); color:white; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; display:none; }
+  .sidebar-bottom { margin-top:auto; padding:16px 12px; border-top:1px solid var(--border); }
+  .sidebar-user { display:flex; align-items:center; gap:10px; }
+  .sidebar-avatar { width:36px; height:36px; background:var(--yellow); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; color:var(--black); flex-shrink:0; }
+  .sidebar-user-name { font-size:13px; font-weight:600; color:var(--white); }
+  .sidebar-user-role { font-size:11px; color:var(--text-muted); }
+
+  /* ─── MAIN CONTENT ─── */
+  .main { margin-left:240px; padding-top:64px; min-height:100vh; }
+  .page { display:none; padding:32px 28px; }
+  .page.active { display:block; }
+
+  /* ─── STATS CARDS ─── */
+  .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:28px; }
+  .stat-card {
+    background:var(--dark2); border:1px solid var(--border); border-radius:12px;
+    padding:24px 22px; position:relative; overflow:hidden; transition:border-color 0.2s;
+  }
+  .stat-card:hover { border-color:rgba(255,208,0,0.2); }
+  .stat-card::after { content:''; position:absolute; top:0; right:0; width:80px; height:80px; border-radius:50%; opacity:0.06; transform:translate(20px,-20px); }
+  .stat-card.yellow::after { background:var(--yellow); }
+  .stat-card.green::after  { background:var(--green); }
+  .stat-card.orange::after { background:var(--orange); }
+  .stat-card.blue::after   { background:var(--blue); }
+  .stat-label { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); font-weight:600; margin-bottom:10px; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:36px; font-weight:700; color:var(--white); line-height:1; margin-bottom:6px; }
+  .stat-sub { font-size:12px; color:var(--text-muted); }
+  .stat-icon { position:absolute; top:22px; right:22px; font-size:22px; opacity:0.5; }
+  .stat-change { display:inline-flex; align-items:center; gap:4px; font-size:11px; font-weight:600; margin-top:4px; }
+  .stat-change.up { color:var(--green); }
+  .stat-change.neutral { color:var(--text-muted); }
+
+  /* ─── SECTION HEADERS ─── */
+  .section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+  .section-title { font-size:18px; color:var(--white); }
+  .section-sub { font-size:13px; color:var(--text-muted); margin-top:2px; }
+
+  /* ─── FILTER + SEARCH BAR ─── */
+  .toolbar { display:flex; align-items:center; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .search-box {
+    display:flex; align-items:center; gap:10px; flex:1; min-width:200px;
+    background:var(--dark2); border:1px solid var(--border); border-radius:8px; padding:0 14px;
+  }
+  .search-icon { color:var(--text-muted); font-size:15px; }
+  .search-input { background:none; border:none; color:var(--white); font-size:14px; padding:11px 0; width:100%; outline:none; font-family:'DM Sans',sans-serif; }
+  .search-input::placeholder { color:rgba(255,255,255,0.2); }
+  .filter-select {
+    background:var(--dark2); border:1px solid var(--border); color:var(--text);
+    padding:10px 14px; border-radius:8px; font-size:13px; outline:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; transition:border-color 0.2s;
+  }
+  .filter-select:focus { border-color:var(--yellow); }
+
+  /* ─── TABLE ─── */
+  .table-wrap { background:var(--dark2); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { padding:14px 18px; text-align:left; font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); font-weight:600; background:rgba(255,255,255,0.02); border-bottom:1px solid var(--border); white-space:nowrap; }
+  tbody tr { border-bottom:1px solid rgba(255,255,255,0.04); transition:background 0.15s; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:rgba(255,255,255,0.03); }
+  tbody td { padding:14px 18px; font-size:13.5px; color:var(--text); vertical-align:middle; }
+  .td-name { font-weight:600; color:var(--white); }
+  .td-muted { color:var(--text-muted); font-size:12.5px; }
+  .table-empty { text-align:center; padding:56px 20px; color:var(--text-muted); font-size:14px; }
+  .table-empty-icon { font-size:40px; margin-bottom:12px; display:block; opacity:0.4; }
+
+  /* ─── STATUS BADGES ─── */
+  .badge { display:inline-flex; align-items:center; gap:5px; padding:4px 11px; border-radius:20px; font-size:11.5px; font-weight:600; letter-spacing:0.3px; white-space:nowrap; }
+  .badge::before { content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+  .badge-pending  { background:rgba(245,158,11,0.12); color:#fbbf24; border:1px solid rgba(245,158,11,0.25); }
+  .badge-pending::before  { background:#fbbf24; }
+  .badge-confirmed{ background:rgba(59,130,246,0.12); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
+  .badge-confirmed::before{ background:#93c5fd; }
+  .badge-in_progress { background:rgba(139,92,246,0.12); color:#c4b5fd; border:1px solid rgba(139,92,246,0.25); }
+  .badge-in_progress::before { background:#c4b5fd; }
+  .badge-completed{ background:rgba(34,197,94,0.12); color:#86efac; border:1px solid rgba(34,197,94,0.25); }
+  .badge-completed::before{ background:#86efac; }
+  .badge-cancelled{ background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
+  .badge-cancelled::before{ background:#fca5a5; }
+  .badge-unread   { background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
+  .badge-unread::before   { background:#fca5a5; }
+  .badge-read     { background:rgba(255,255,255,0.06); color:var(--text-muted); border:1px solid var(--border); }
+  .badge-read::before     { background:var(--text-muted); }
+  .badge-replied  { background:rgba(34,197,94,0.12); color:#86efac; border:1px solid rgba(34,197,94,0.25); }
+  .badge-replied::before  { background:#86efac; }
+
+  /* ─── ACTION BUTTONS ─── */
+  .action-btns { display:flex; gap:6px; flex-wrap:wrap; }
+  .act-btn {
+    padding:5px 12px; border-radius:5px; font-size:11.5px; font-weight:600; cursor:pointer;
+    border:1px solid transparent; transition:all 0.2s; font-family:'DM Sans',sans-serif; white-space:nowrap;
+  }
+  .act-confirm  { background:rgba(59,130,246,0.12); color:#93c5fd; border-color:rgba(59,130,246,0.25); }
+  .act-confirm:hover  { background:rgba(59,130,246,0.25); }
+  .act-start    { background:rgba(139,92,246,0.12); color:#c4b5fd; border-color:rgba(139,92,246,0.25); }
+  .act-start:hover    { background:rgba(139,92,246,0.25); }
+  .act-complete { background:rgba(34,197,94,0.12); color:#86efac; border-color:rgba(34,197,94,0.25); }
+  .act-complete:hover { background:rgba(34,197,94,0.25); }
+  .act-cancel   { background:rgba(239,68,68,0.1); color:#fca5a5; border-color:rgba(239,68,68,0.2); }
+  .act-cancel:hover   { background:rgba(239,68,68,0.2); }
+  .act-view     { background:rgba(255,255,255,0.06); color:var(--text); border-color:var(--border); }
+  .act-view:hover     { background:rgba(255,255,255,0.1); }
+  .act-read     { background:rgba(255,208,0,0.1); color:var(--yellow); border-color:rgba(255,208,0,0.2); }
+  .act-read:hover     { background:rgba(255,208,0,0.2); }
+  .act-replied  { background:rgba(34,197,94,0.1); color:#86efac; border-color:rgba(34,197,94,0.2); }
+  .act-replied:hover  { background:rgba(34,197,94,0.2); }
+
+  /* ─── DETAIL MODAL ─── */
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; align-items:center; justify-content:center; padding:20px; }
+  .modal-overlay.active { display:flex; }
+  .modal {
+    background:var(--dark2); border:1px solid var(--border); border-radius:14px;
+    padding:36px; max-width:640px; width:100%; max-height:90vh; overflow-y:auto;
+    position:relative; box-shadow:0 32px 80px rgba(0,0,0,0.7);
+  }
+  .modal-close { position:absolute; top:16px; right:20px; background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--text-muted); width:32px; height:32px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:18px; transition:all 0.2s; }
+  .modal-close:hover { border-color:var(--red); color:#fca5a5; }
+  .modal-title { font-size:22px; color:var(--white); margin-bottom:4px; }
+  .modal-id { font-size:11px; color:var(--text-muted); font-family:monospace; margin-bottom:24px; }
+  .detail-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .detail-field { }
+  .detail-label { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); font-weight:600; margin-bottom:4px; }
+  .detail-value { font-size:14px; color:var(--white); font-weight:500; }
+  .detail-full { grid-column:1/-1; }
+  .detail-section-title { grid-column:1/-1; font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--yellow); font-weight:600; padding-top:8px; border-top:1px solid var(--border); }
+  .modal-actions { display:flex; gap:10px; flex-wrap:wrap; margin-top:28px; padding-top:20px; border-top:1px solid var(--border); }
+  .modal-note-input {
+    width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border);
+    color:var(--white); padding:12px 14px; border-radius:8px; font-size:13px;
+    font-family:'DM Sans',sans-serif; outline:none; resize:vertical; min-height:80px;
+    transition:border-color 0.2s; margin-top:8px;
+  }
+  .modal-note-input:focus { border-color:var(--yellow); }
+  .modal-note-input::placeholder { color:rgba(255,255,255,0.2); }
+
+  /* ─── TOAST ─── */
+  #toast { position:fixed; bottom:28px; right:28px; z-index:99999; display:flex; flex-direction:column; gap:10px; }
+  .toast-item {
+    background:var(--dark3); border:1px solid var(--border); padding:14px 20px;
+    border-radius:10px; font-size:13.5px; color:var(--white); display:flex; align-items:center; gap:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.4); min-width:260px;
+    animation:toast-in 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .toast-item.success { border-color:rgba(34,197,94,0.3); }
+  .toast-item.error   { border-color:rgba(239,68,68,0.3); }
+  @keyframes toast-in { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ─── MINI CHART BARS ─── */
+  .mini-chart { display:flex; align-items:flex-end; gap:3px; height:40px; margin-top:8px; }
+  .mini-bar { flex:1; background:rgba(255,208,0,0.15); border-radius:2px 2px 0 0; min-width:8px; transition:background 0.2s; }
+  .mini-bar:hover { background:rgba(255,208,0,0.4); }
+  .mini-bar.active { background:var(--yellow); }
+
+  /* ─── QUICK STATS ROW ─── */
+  .quick-row { display:grid; grid-template-columns:2fr 1fr; gap:18px; margin-bottom:28px; }
+  .today-panel { background:var(--dark2); border:1px solid var(--border); border-radius:12px; padding:22px; }
+  .today-title { font-size:14px; font-weight:600; color:var(--white); margin-bottom:14px; display:flex; align-items:center; justify-content:space-between; }
+  .today-empty { color:var(--text-muted); font-size:13px; padding:16px 0; text-align:center; }
+  .today-item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); }
+  .today-item:last-child { border-bottom:none; }
+  .today-item-name { font-size:13.5px; font-weight:600; color:var(--white); }
+  .today-item-sub { font-size:12px; color:var(--text-muted); margin-top:2px; }
+  .today-item-time { font-size:13px; color:var(--yellow); font-weight:600; }
+
+  /* ─── DRIVER ASSIGNMENT ─── */
+  .driver-select {
+    background:var(--dark3); border:1px solid var(--border); color:var(--text);
+    padding:5px 10px; border-radius:6px; font-size:12px; outline:none; cursor:pointer;
+    font-family:'DM Sans',sans-serif; max-width:140px;
+  }
+
+  /* ─── LOADING ─── */
+  .loading { text-align:center; padding:48px; color:var(--text-muted); }
+  .spinner { width:32px; height:32px; border:3px solid var(--border); border-top-color:var(--yellow); border-radius:50%; animation:spin 0.8s linear infinite; margin:0 auto 12px; }
+  @keyframes spin { to{transform:rotate(360deg)} }
+
+  /* ─── REFRESH BTN ─── */
+  .refresh-btn { background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text-muted); padding:8px 14px; border-radius:7px; font-size:12.5px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:6px; }
+  .refresh-btn:hover { border-color:var(--yellow); color:var(--yellow); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width:1024px) { .stats-grid{grid-template-columns:1fr 1fr;} }
+  @media (max-width:768px) {
+    .sidebar{transform:translateX(-100%);} .main{margin-left:0;} .topbar{left:0;}
+    .stats-grid{grid-template-columns:1fr 1fr;} .quick-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-mark">JX</div>
+      <div>
+        <div class="login-logo-text">Jux<span>Drive</span></div>
+      </div>
+    </div>
+    <span class="login-badge">Admin Portal</span>
+    <h2 class="login-title">Welcome back</h2>
+    <p class="login-sub">Sign in to manage bookings, drivers and messages.</p>
+    <div class="login-field">
+      <label class="login-label">Email Address</label>
+      <input class="login-input" type="email" id="login-email" placeholder="admin@juxdrive.org" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label class="login-label">Password</label>
+      <input class="login-input" type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In →</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADMIN APP ═══════════════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-mark">JX</div>
+      <div>
+        <div class="sidebar-logo-text">Jux<span>Drive</span></div>
+        <div class="sidebar-admin-tag">Admin Panel</div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Overview</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Bookings</div>
+      <div class="nav-item" onclick="showPage('bookings',this)">
+        <span class="nav-icon">📋</span> All Bookings
+        <span class="nav-count" id="pending-nav-count"></span>
+      </div>
+      <div class="nav-item" onclick="showPage('today',this)">
+        <span class="nav-icon">📅</span> Today's Rides
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Communications</div>
+      <div class="nav-item" onclick="showPage('messages',this)">
+        <span class="nav-icon">✉️</span> Messages
+        <span class="nav-count" id="msg-nav-count"></span>
+      </div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Team</div>
+      <div class="nav-item" onclick="showPage('drivers',this)">
+        <span class="nav-icon">🧑‍✈️</span> Drivers
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebar-avatar">PT</div>
+        <div>
+          <div class="sidebar-user-name" id="sidebar-name">Admin</div>
+          <div class="sidebar-user-role">JuxDrive Admin</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-page-title" id="topbar-title">Dashboard</span>
+      <span class="topbar-badge" id="pending-badge"></span>
+    </div>
+    <div class="topbar-right">
+      <button class="refresh-btn" onclick="refreshAll()">🔄 Refresh</button>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- ─── DASHBOARD PAGE ─── -->
+    <div class="page active" id="page-dashboard">
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card yellow">
+          <span class="stat-icon">📋</span>
+          <div class="stat-label">Total Bookings</div>
+          <div class="stat-num" id="stat-total">—</div>
+          <div class="stat-sub">All time</div>
+        </div>
+        <div class="stat-card orange">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-label">Pending</div>
+          <div class="stat-num" id="stat-pending">—</div>
+          <div class="stat-sub">Awaiting confirmation</div>
+        </div>
+        <div class="stat-card green">
+          <span class="stat-icon">✅</span>
+          <div class="stat-label">Completed</div>
+          <div class="stat-num" id="stat-completed">—</div>
+          <div class="stat-sub">Successfully delivered</div>
+        </div>
+        <div class="stat-card blue">
+          <span class="stat-icon">✉️</span>
+          <div class="stat-label">Unread Messages</div>
+          <div class="stat-num" id="stat-messages">—</div>
+          <div class="stat-sub">Need response</div>
+        </div>
+      </div>
+
+      <div class="quick-row">
+        <!-- Today's bookings -->
+        <div class="today-panel">
+          <div class="today-title">
+            📅 Today's Bookings
+            <span style="font-size:12px;color:var(--text-muted);font-weight:400;" id="today-date"></span>
+          </div>
+          <div id="today-list"><div class="today-empty">Loading...</div></div>
+        </div>
+        <!-- Quick stats panel -->
+        <div class="today-panel">
+          <div class="today-title">📈 This Week</div>
+          <div style="display:flex;flex-direction:column;gap:14px;margin-top:4px;">
+            <div>
+              <div style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Bookings by Status</div>
+              <div style="display:flex;flex-direction:column;gap:6px;" id="status-breakdown"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent bookings -->
+      <div class="section-head">
+        <div>
+          <h3 class="section-title">Recent Bookings</h3>
+          <div class="section-sub">Latest 5 submissions</div>
+        </div>
+        <button class="refresh-btn" onclick="showPage('bookings', document.querySelector('.nav-item:nth-of-type(2)'))">View All →</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Client</th><th>Date</th><th>Service</th><th>Pickup</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="recent-bookings-body">
+            <tr><td colspan="6" class="table-empty"><div class="spinner"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── ALL BOOKINGS PAGE ─── -->
+    <div class="page" id="page-bookings">
+      <div class="section-head">
+        <div>
+          <h3 class="section-title">All Bookings</h3>
+          <div class="section-sub" id="bookings-count-label">Loading...</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="booking-search" placeholder="Search by name, phone or location..." oninput="filterBookings()">
+        </div>
+        <select class="filter-select" id="status-filter" onchange="filterBookings()">
+          <option value="">All Statuses</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="in_progress">In Progress</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <select class="filter-select" id="service-filter" onchange="filterBookings()">
+          <option value="">All Services</option>
+          <option value="Wedding">Wedding</option>
+          <option value="Business Trip">Business Trip</option>
+          <option value="Airport Pickup">Airport Pickup</option>
+          <option value="Overnight Trip">Overnight Trip</option>
+          <option value="Personal / Errand">Personal / Errand</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Client</th><th>Contact</th><th>Date & Time</th><th>Service</th>
+            <th>Route</th><th>Vehicle</th><th>Driver</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="bookings-body">
+            <tr><td colspan="9" class="table-empty"><div class="loading"><div class="spinner"></div>Loading bookings...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── TODAY'S RIDES PAGE ─── -->
+    <div class="page" id="page-today">
+      <div class="section-head">
+        <div>
+          <h3 class="section-title">Today's Rides</h3>
+          <div class="section-sub" id="today-date-label"></div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Client</th><th>Phone</th><th>Time</th><th>Route</th><th>Service</th><th>Driver</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="today-body">
+            <tr><td colspan="8" class="table-empty"><div class="loading"><div class="spinner"></div></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── MESSAGES PAGE ─── -->
+    <div class="page" id="page-messages">
+      <div class="section-head">
+        <div>
+          <h3 class="section-title">Contact Messages</h3>
+          <div class="section-sub" id="messages-count-label">Loading...</div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="msg-search" placeholder="Search by name, email or subject..." oninput="filterMessages()">
+        </div>
+        <select class="filter-select" id="msg-filter" onchange="filterMessages()">
+          <option value="">All Messages</option>
+          <option value="unread">Unread</option>
+          <option value="read">Read</option>
+          <option value="replied">Replied</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>From</th><th>Contact</th><th>Subject</th><th>Message</th><th>Date</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="messages-body">
+            <tr><td colspan="7" class="table-empty"><div class="loading"><div class="spinner"></div>Loading messages...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ─── DRIVERS PAGE ─── -->
+    <div class="page" id="page-drivers">
+      <div class="section-head">
+        <div>
+          <h3 class="section-title">Driver Roster</h3>
+          <div class="section-sub">Active JuxDrive chauffeurs</div>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Driver</th><th>Licence</th><th>Speciality</th><th>Total Rides</th><th>Rating</th><th>Status</th>
+          </tr></thead>
+          <tbody>
+            <tr><td class="td-name">Christian Ansah</td><td>Licence D</td><td>Wedding, Business, Airport</td><td>180+</td><td>⭐ 4.9</td><td><span class="badge badge-completed">Available</span></td></tr>
+            <tr><td class="td-name">Kofi Kwame</td><td>Certified</td><td>Overnight, VIP, Corporate</td><td>320+</td><td>⭐ 5.0</td><td><span class="badge badge-completed">Available</span></td></tr>
+            <tr><td class="td-name">Emmanuel Darko</td><td>Licence B</td><td>Errands, Personal, Airport</td><td>145+</td><td>⭐ 4.8</td><td><span class="badge badge-in_progress">On a Ride</span></td></tr>
+            <tr><td class="td-name">Nana Agyei</td><td>Executive</td><td>Corporate, Luxury Fleet</td><td>260+</td><td>⭐ 4.9</td><td><span class="badge badge-completed">Available</span></td></tr>
+            <tr><td class="td-name">Kwabena Mensah</td><td>Licence B</td><td>Wedding, Overnight</td><td>110+</td><td>⭐ 4.7</td><td><span class="badge badge-completed">Available</span></td></tr>
+            <tr><td class="td-name">Yaw Boateng</td><td>Licence D</td><td>VIP, Luxury Fleet, Airport</td><td>200+</td><td>⭐ 4.8</td><td><span class="badge badge-in_progress">On a Ride</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- BOOKING DETAIL MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('booking-modal')">×</button>
+    <h3 class="modal-title" id="bm-name">Booking Details</h3>
+    <div class="modal-id" id="bm-id"></div>
+    <div class="detail-grid" id="bm-grid"></div>
+    <div style="margin-top:20px;">
+      <div class="detail-label">Admin Notes</div>
+      <textarea class="modal-note-input" id="bm-notes" placeholder="Add internal notes about this booking..."></textarea>
+    </div>
+    <div class="modal-actions" id="bm-actions"></div>
+  </div>
+</div>
+
+<!-- MESSAGE DETAIL MODAL -->
+<div class="modal-overlay" id="message-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('message-modal')">×</button>
+    <h3 class="modal-title" id="mm-name">Message</h3>
+    <div class="modal-id" id="mm-id"></div>
+    <div class="detail-grid" id="mm-grid"></div>
+    <div class="modal-actions" id="mm-actions"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const sb = createClient(
+    'https://eyuoejjewuzxouirymze.supabase.co',
+    'sb_publishable_TtgDPqo5tnX-bpiu3AclgQ_Jzg6M-y_'
+  );
+
+  // ─── STATE ───
+  let allBookings = [];
+  let allMessages = [];
+  let currentBooking = null;
+  let currentMessage = null;
+
+  const DRIVERS = ['Christian Ansah','Kofi Kwame','Emmanuel Darko','Nana Agyei','Kwabena Mensah','Yaw Boateng'];
+
+  // ─── LOGIN ───
+  window.doLogin = async () => {
+    const email = document.getElementById('login-email').value.trim();
+    const pass  = document.getElementById('login-password').value;
+    const btn   = document.getElementById('login-btn');
+    const err   = document.getElementById('login-error');
+    if (!email || !pass) { showErr('Please enter email and password.'); return; }
+    btn.textContent = 'Signing in…'; btn.disabled = true;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+      showErr(error.message || 'Invalid credentials. Please try again.');
+      btn.textContent = 'Sign In →'; btn.disabled = false;
+    } else {
+      launchApp(data.user);
+    }
+    function showErr(msg) { err.textContent = msg; err.style.display = 'block'; btn.textContent = 'Sign In →'; btn.disabled = false; }
+  };
+
+  // Allow Enter key on login
+  document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
+  document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') window.doLogin(); });
+
+  // ─── CHECK SESSION ───
+  sb.auth.getSession().then(({ data: { session } }) => {
+    if (session) launchApp(session.user);
+  });
+
+  // ─── LAUNCH APP ───
+  function launchApp(user) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    const name = user.email.split('@')[0].replace(/[._]/g,' ');
+    document.getElementById('sidebar-name').textContent = name;
+    document.getElementById('sidebar-avatar').textContent = name.substring(0,2).toUpperCase();
+    document.getElementById('today-date').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+    document.getElementById('today-date-label').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    refreshAll();
+  }
+
+  // ─── LOGOUT ───
+  window.doLogout = async () => {
+    await sb.auth.signOut();
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('login-error').style.display = 'none';
+    document.getElementById('login-password').value = '';
+  };
+
+  // ─── REFRESH ALL ───
+  window.refreshAll = () => { loadBookings(); loadMessages(); };
+
+  // ─── LOAD BOOKINGS ───
+  async function loadBookings() {
+    const { data, error } = await sb.from('bookings').select('*').order('created_at', { ascending: false });
+    if (error) { toast('Failed to load bookings', 'error'); return; }
+    allBookings = data || [];
+    renderStats();
+    renderRecentBookings();
+    renderAllBookings();
+    renderTodayBookings();
+    updateNavCounts();
+  }
+
+  // ─── LOAD MESSAGES ───
+  async function loadMessages() {
+    const { data, error } = await sb.from('contact_messages').select('*').order('created_at', { ascending: false });
+    if (error) { toast('Failed to load messages', 'error'); return; }
+    allMessages = data || [];
+    renderMessages();
+    updateNavCounts();
+  }
+
+  // ─── STATS ───
+  function renderStats() {
+    const total     = allBookings.length;
+    const pending   = allBookings.filter(b => b.status === 'pending').length;
+    const completed = allBookings.filter(b => b.status === 'completed').length;
+    const unread    = allMessages.filter(m => m.status === 'unread').length;
+    document.getElementById('stat-total').textContent     = total;
+    document.getElementById('stat-pending').textContent   = pending;
+    document.getElementById('stat-completed').textContent = completed;
+    document.getElementById('stat-messages').textContent  = unread;
+    if (pending > 0) {
+      document.getElementById('pending-badge').textContent = pending + ' pending';
+      document.getElementById('pending-badge').style.display = 'inline-flex';
+    }
+    // Status breakdown
+    const statuses = ['pending','confirmed','in_progress','completed','cancelled'];
+    const labels   = { pending:'Pending', confirmed:'Confirmed', in_progress:'In Progress', completed:'Completed', cancelled:'Cancelled' };
+    document.getElementById('status-breakdown').innerHTML = statuses.map(s => {
+      const count = allBookings.filter(b => b.status === s).length;
+      const pct   = total > 0 ? Math.round((count/total)*100) : 0;
+      return `<div style="display:flex;align-items:center;gap:10px;font-size:13px">
+        <span style="width:80px;color:var(--text-muted)">${labels[s]}</span>
+        <div style="flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px">
+          <div style="width:${pct}%;height:100%;background:var(--yellow);border-radius:3px;transition:width 0.6s ease"></div>
+        </div>
+        <span style="width:28px;text-align:right;color:var(--white);font-weight:600">${count}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // ─── TODAY'S BOOKINGS ───
+  function renderTodayBookings() {
+    const today = new Date().toISOString().split('T')[0];
+    const todayBks = allBookings.filter(b => b.pickup_date === today);
+    // Sidebar quick list
+    const listEl = document.getElementById('today-list');
+    if (todayBks.length === 0) {
+      listEl.innerHTML = '<div class="today-empty">No rides scheduled today</div>';
+    } else {
+      listEl.innerHTML = todayBks.map(b => `
+        <div class="today-item">
+          <div>
+            <div class="today-item-name">${b.full_name}</div>
+            <div class="today-item-sub">${b.pickup_location} → ${b.dropoff_location}</div>
+          </div>
+          <div class="today-item-time">${b.pickup_time ? b.pickup_time.substring(0,5) : 'TBD'}</div>
+        </div>`).join('');
+    }
+    // Today's page table
+    const tbody = document.getElementById('today-body');
+    if (todayBks.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="table-empty"><span class="table-empty-icon">📅</span>No rides scheduled for today</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = todayBks.map(b => `
+      <tr>
+        <td><div class="td-name">${b.full_name}</div></td>
+        <td><div class="td-muted">${b.phone}</div></td>
+        <td>${b.pickup_time ? b.pickup_time.substring(0,5) : '<span class="td-muted">TBD</span>'}</td>
+        <td><div style="max-width:180px"><div>${b.pickup_location}</div><div class="td-muted">→ ${b.dropoff_location}</div></div></td>
+        <td>${b.purpose || '—'}</td>
+        <td>${b.preferred_driver ? `<span style="color:var(--yellow);font-weight:600">${b.preferred_driver}</span>` : driverSelect(b.id, '')}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td><div class="action-btns">${actionBtns(b)}</div></td>
+      </tr>`).join('');
+  }
+
+  // ─── RECENT BOOKINGS (dashboard) ───
+  function renderRecentBookings() {
+    const tbody = document.getElementById('recent-bookings-body');
+    const recent = allBookings.slice(0,5);
+    if (recent.length === 0) { tbody.innerHTML = `<tr><td colspan="6" class="table-empty"><span class="table-empty-icon">📋</span>No bookings yet</td></tr>`; return; }
+    tbody.innerHTML = recent.map(b => `
+      <tr>
+        <td><div class="td-name">${b.full_name}</div><div class="td-muted">${b.phone}</div></td>
+        <td>${fmtDate(b.pickup_date)}</td>
+        <td>${b.purpose || '—'}</td>
+        <td><div style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pickup_location}</div></td>
+        <td>${statusBadge(b.status)}</td>
+        <td><div class="action-btns">${actionBtns(b)}</div></td>
+      </tr>`).join('');
+  }
+
+  // ─── ALL BOOKINGS ───
+  window.filterBookings = () => renderAllBookings();
+  function renderAllBookings() {
+    const search  = (document.getElementById('booking-search').value || '').toLowerCase();
+    const status  = document.getElementById('status-filter').value;
+    const service = document.getElementById('service-filter').value;
+    let filtered  = allBookings.filter(b => {
+      const matchSearch  = !search  || b.full_name?.toLowerCase().includes(search) || b.phone?.includes(search) || b.pickup_location?.toLowerCase().includes(search) || b.dropoff_location?.toLowerCase().includes(search);
+      const matchStatus  = !status  || b.status === status;
+      const matchService = !service || b.purpose === service;
+      return matchSearch && matchStatus && matchService;
+    });
+    document.getElementById('bookings-count-label').textContent = `${filtered.length} of ${allBookings.length} bookings`;
+    const tbody = document.getElementById('bookings-body');
+    if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="9" class="table-empty"><span class="table-empty-icon">🔍</span>No bookings match your filters</td></tr>`; return; }
+    tbody.innerHTML = filtered.map(b => `
+      <tr>
+        <td><div class="td-name">${b.full_name}</div><div class="td-muted">${fmtDate(b.created_at)}</div></td>
+        <td><div>${b.phone}</div><div class="td-muted">${b.email||'—'}</div></td>
+        <td><div>${fmtDate(b.pickup_date)}</div><div class="td-muted">${b.pickup_time?b.pickup_time.substring(0,5):'TBD'}</div></td>
+        <td>${b.purpose||'—'}</td>
+        <td><div style="max-width:160px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.pickup_location}</div><div class="td-muted" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">→ ${b.dropoff_location}</div></div></td>
+        <td><div class="td-muted">${b.vehicle_option==='rent_vehicle'?'🏎️ Rental':'🚘 Personal'}</div>${b.vehicle_model?`<div class="td-muted">${b.vehicle_model}</div>`:''}</td>
+        <td>${b.preferred_driver?`<span style="color:var(--yellow);font-size:13px;font-weight:600">${b.preferred_driver}</span>`:driverSelect(b.id, b.preferred_driver||'')}</td>
+        <td>${statusBadge(b.status)}</td>
+        <td><div class="action-btns">${actionBtns(b)}</div></td>
+      </tr>`).join('');
+  }
+
+  // ─── MESSAGES ───
+  window.filterMessages = () => renderMessages();
+  function renderMessages() {
+    const search = (document.getElementById('msg-search').value||'').toLowerCase();
+    const filter = document.getElementById('msg-filter').value;
+    let filtered = allMessages.filter(m => {
+      const matchSearch = !search || m.full_name?.toLowerCase().includes(search) || m.email?.toLowerCase().includes(search) || m.subject?.toLowerCase().includes(search);
+      const matchFilter = !filter || m.status === filter;
+      return matchSearch && matchFilter;
+    });
+    document.getElementById('messages-count-label').textContent = `${filtered.length} messages · ${allMessages.filter(m=>m.status==='unread').length} unread`;
+    const tbody = document.getElementById('messages-body');
+    if (filtered.length === 0) { tbody.innerHTML = `<tr><td colspan="7" class="table-empty"><span class="table-empty-icon">✉️</span>No messages found</td></tr>`; return; }
+    tbody.innerHTML = filtered.map(m => `
+      <tr style="${m.status==='unread'?'background:rgba(239,68,68,0.03)':''}">
+        <td><div class="td-name" style="${m.status==='unread'?'color:var(--white)':''}">${m.full_name}</div></td>
+        <td><div class="td-muted">${m.email}</div>${m.phone?`<div class="td-muted">${m.phone}</div>`:''}</td>
+        <td>${m.subject||'<span class="td-muted">—</span>'}</td>
+        <td><div style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted);font-size:13px">${m.message}</div></td>
+        <td class="td-muted">${fmtDate(m.created_at)}</td>
+        <td>${msgStatusBadge(m.status)}</td>
+        <td><div class="action-btns">
+          <button class="act-btn act-view" onclick="viewMessage('${m.id}')">View</button>
+          ${m.status==='unread'?`<button class="act-btn act-read" onclick="updateMsgStatus('${m.id}','read')">Mark Read</button>`:''}
+          ${m.status!=='replied'?`<button class="act-btn act-replied" onclick="updateMsgStatus('${m.id}','replied')">Replied</button>`:''}
+        </div></td>
+      </tr>`).join('');
+  }
+
+  // ─── NAV COUNTS ───
+  function updateNavCounts() {
+    const pending = allBookings.filter(b=>b.status==='pending').length;
+    const unread  = allMessages.filter(m=>m.status==='unread').length;
+    const pnc = document.getElementById('pending-nav-count');
+    const mnc = document.getElementById('msg-nav-count');
+    if (pending > 0) { pnc.textContent = pending; pnc.style.display='inline-block'; } else { pnc.style.display='none'; }
+    if (unread  > 0) { mnc.textContent = unread;  mnc.style.display='inline-block'; } else { mnc.style.display='none'; }
+  }
+
+  // ─── UPDATE BOOKING STATUS ───
+  window.updateStatus = async (id, status) => {
+    const notes = document.getElementById('bm-notes')?.value || null;
+    const { error } = await sb.from('bookings').update({ status, notes }).eq('id', id);
+    if (error) { toast('Update failed: '+error.message, 'error'); return; }
+    toast(`Booking marked as ${status} ✓`, 'success');
+    closeModal('booking-modal');
+    await loadBookings();
+  };
+
+  // ─── ASSIGN DRIVER ───
+  window.assignDriver = async (id, driver) => {
+    if (!driver) return;
+    const { error } = await sb.from('bookings').update({ preferred_driver: driver }).eq('id', id);
+    if (error) { toast('Could not assign driver', 'error'); return; }
+    toast(`${driver} assigned ✓`, 'success');
+    await loadBookings();
+  };
+
+  // ─── UPDATE MESSAGE STATUS ───
+  window.updateMsgStatus = async (id, status) => {
+    const { error } = await sb.from('contact_messages').update({ status }).eq('id', id);
+    if (error) { toast('Update failed', 'error'); return; }
+    toast(`Message marked as ${status} ✓`, 'success');
+    closeModal('message-modal');
+    await loadMessages();
+  };
+
+  // ─── VIEW BOOKING DETAIL ───
+  window.viewBooking = (id) => {
+    const b = allBookings.find(x => x.id === id);
+    if (!b) return;
+    currentBooking = b;
+    document.getElementById('bm-name').textContent = b.full_name;
+    document.getElementById('bm-id').textContent = 'Booking ID: ' + b.id;
+    document.getElementById('bm-notes').value = b.notes || '';
+    document.getElementById('bm-grid').innerHTML = `
+      <div class="detail-section-title">Personal Details</div>
+      <div class="detail-field"><div class="detail-label">Full Name</div><div class="detail-value">${b.full_name}</div></div>
+      <div class="detail-field"><div class="detail-label">Phone</div><div class="detail-value">${b.phone}</div></div>
+      <div class="detail-field"><div class="detail-label">Email</div><div class="detail-value">${b.email||'—'}</div></div>
+      <div class="detail-field"><div class="detail-label">Emergency Contact</div><div class="detail-value">${b.emergency_number||'—'}</div></div>
+      <div class="detail-section-title">Ride Details</div>
+      <div class="detail-field"><div class="detail-label">Date</div><div class="detail-value">${fmtDate(b.pickup_date)}</div></div>
+      <div class="detail-field"><div class="detail-label">Time</div><div class="detail-value">${b.pickup_time||'TBD'}</div></div>
+      <div class="detail-field detail-full"><div class="detail-label">Pickup</div><div class="detail-value">${b.pickup_location}</div></div>
+      <div class="detail-field detail-full"><div class="detail-label">Drop-off</div><div class="detail-value">${b.dropoff_location}</div></div>
+      <div class="detail-field"><div class="detail-label">Service</div><div class="detail-value">${b.purpose}</div></div>
+      <div class="detail-field"><div class="detail-label">Status</div><div class="detail-value">${statusBadge(b.status)}</div></div>
+      <div class="detail-section-title">Vehicle</div>
+      <div class="detail-field"><div class="detail-label">Option</div><div class="detail-value">${b.vehicle_option==='rent_vehicle'?'Rental Vehicle':'Personal Car'}</div></div>
+      <div class="detail-field"><div class="detail-label">Model</div><div class="detail-value">${b.vehicle_model||'—'}</div></div>
+      <div class="detail-field"><div class="detail-label">Year</div><div class="detail-value">${b.vehicle_year||'—'}</div></div>
+      <div class="detail-field"><div class="detail-label">Transmission</div><div class="detail-value">${b.transmission||'—'}</div></div>
+      <div class="detail-field"><div class="detail-label">Assigned Driver</div><div class="detail-value">${b.preferred_driver||'<span style="color:var(--text-muted)">Not assigned</span>'}</div></div>
+      <div class="detail-field"><div class="detail-label">Submitted</div><div class="detail-value">${new Date(b.created_at).toLocaleString()}</div></div>
+    `;
+    document.getElementById('bm-actions').innerHTML = `
+      ${b.status==='pending'    ? `<button class="act-btn act-confirm"  onclick="updateStatus('${b.id}','confirmed')">✓ Confirm</button>` : ''}
+      ${b.status==='confirmed'  ? `<button class="act-btn act-start"    onclick="updateStatus('${b.id}','in_progress')">▶ Start Ride</button>` : ''}
+      ${b.status==='in_progress'? `<button class="act-btn act-complete" onclick="updateStatus('${b.id}','completed')">✅ Complete</button>` : ''}
+      ${b.status!=='completed' && b.status!=='cancelled' ? `<button class="act-btn act-cancel" onclick="updateStatus('${b.id}','cancelled')">✕ Cancel</button>` : ''}
+      <button class="act-btn act-view" onclick="updateStatus('${b.id}', '${b.status}')">💾 Save Notes</button>
+    `;
+    document.getElementById('booking-modal').classList.add('active');
+  };
+
+  // ─── VIEW MESSAGE DETAIL ───
+  window.viewMessage = (id) => {
+    const m = allMessages.find(x => x.id === id);
+    if (!m) return;
+    currentMessage = m;
+    document.getElementById('mm-name').textContent = m.full_name;
+    document.getElementById('mm-id').textContent = 'Message ID: ' + m.id;
+    document.getElementById('mm-grid').innerHTML = `
+      <div class="detail-field"><div class="detail-label">From</div><div class="detail-value">${m.full_name}</div></div>
+      <div class="detail-field"><div class="detail-label">Status</div><div class="detail-value">${msgStatusBadge(m.status)}</div></div>
+      <div class="detail-field"><div class="detail-label">Email</div><div class="detail-value"><a href="mailto:${m.email}" style="color:var(--yellow)">${m.email}</a></div></div>
+      <div class="detail-field"><div class="detail-label">Phone</div><div class="detail-value">${m.phone||'—'}</div></div>
+      <div class="detail-field"><div class="detail-label">Subject</div><div class="detail-value">${m.subject||'—'}</div></div>
+      <div class="detail-field"><div class="detail-label">Received</div><div class="detail-value">${new Date(m.created_at).toLocaleString()}</div></div>
+      <div class="detail-field detail-full">
+        <div class="detail-label">Message</div>
+        <div class="detail-value" style="line-height:1.75;background:rgba(255,255,255,0.03);padding:16px;border-radius:8px;border:1px solid var(--border);margin-top:6px">${m.message}</div>
+      </div>
+    `;
+    document.getElementById('mm-actions').innerHTML = `
+      <a href="mailto:${m.email}" class="act-btn act-confirm" style="text-decoration:none">📧 Reply by Email</a>
+      ${m.phone?`<a href="tel:${m.phone}" class="act-btn act-view" style="text-decoration:none">📞 Call</a>`:''}
+      ${m.status==='unread' ? `<button class="act-btn act-read" onclick="updateMsgStatus('${m.id}','read')">Mark Read</button>` : ''}
+      ${m.status!=='replied' ? `<button class="act-btn act-replied" onclick="updateMsgStatus('${m.id}','replied')">Mark Replied</button>` : ''}
+    `;
+    if (m.status === 'unread') updateMsgStatus(m.id, 'read');
+    document.getElementById('message-modal').classList.add('active');
+  };
+
+  // ─── CLOSE MODAL ───
+  window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
+  document.querySelectorAll('.modal-overlay').forEach(el => {
+    el.addEventListener('click', e => { if (e.target === el) el.classList.remove('active'); });
+  });
+
+  // ─── PAGE NAV ───
+  window.showPage = (name, el) => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-'+name).classList.add('active');
+    if (el) el.classList.add('active');
+    const titles = { dashboard:'Dashboard', bookings:'All Bookings', today:"Today's Rides", messages:'Messages', drivers:'Driver Roster' };
+    document.getElementById('topbar-title').textContent = titles[name] || name;
+  };
+
+  // ─── HELPERS ───
+  function statusBadge(s) {
+    const labels = { pending:'Pending', confirmed:'Confirmed', in_progress:'In Progress', completed:'Completed', cancelled:'Cancelled' };
+    return `<span class="badge badge-${s}">${labels[s]||s}</span>`;
+  }
+  function msgStatusBadge(s) {
+    return `<span class="badge badge-${s}">${s.charAt(0).toUpperCase()+s.slice(1)}</span>`;
+  }
+  function actionBtns(b) {
+    return `<button class="act-btn act-view" onclick="viewBooking('${b.id}')">View</button>
+      ${b.status==='pending'    ?`<button class="act-btn act-confirm"  onclick="updateStatus('${b.id}','confirmed')">Confirm</button>`:''}
+      ${b.status==='confirmed'  ?`<button class="act-btn act-start"    onclick="updateStatus('${b.id}','in_progress')">Start</button>`:''}
+      ${b.status==='in_progress'?`<button class="act-btn act-complete" onclick="updateStatus('${b.id}','completed')">Complete</button>`:''}`;
+  }
+  function driverSelect(bookingId, current) {
+    return `<select class="driver-select" onchange="assignDriver('${bookingId}',this.value)">
+      <option value="">Assign driver…</option>
+      ${DRIVERS.map(d=>`<option value="${d}" ${d===current?'selected':''}>${d}</option>`).join('')}
+    </select>`;
+  }
+  function fmtDate(d) {
+    if (!d) return '—';
+    return new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  }
+
+  // ─── TOAST ───
+  window.toast = (msg, type='success') => {
+    const el = document.createElement('div');
+    el.className = `toast-item ${type}`;
+    el.innerHTML = `<span>${type==='success'?'✅':'❌'}</span> ${msg}`;
+    document.getElementById('toast').appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+  };
+</script>
+</body>
+</html>
