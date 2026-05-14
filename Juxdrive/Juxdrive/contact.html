@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact Us — JuxDrive Chauffeuring</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD000;
+    --yellow-dark: #E6BB00;
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --gray: #F5F5F0;
+    --text-muted: #555;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--black); background: var(--white); overflow-x: hidden; }
+  h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(10,10,10,0.97); backdrop-filter: blur(8px); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 68px; border-bottom: 1px solid rgba(255,208,0,0.15); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 38px; height: 38px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 900; font-size: 18px; color: var(--black); }
+  .nav-logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; color: var(--white); letter-spacing: 1px; }
+  .nav-logo-text span { color: var(--yellow); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.8); font-size: 13.5px; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--yellow); }
+  .nav-cta { background: var(--yellow); color: var(--black); padding: 9px 22px; border-radius: 4px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; transition: background 0.2s; }
+  .nav-cta:hover { background: var(--yellow-dark); }
+  .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .nav-hamburger span { width: 24px; height: 2px; background: var(--white); border-radius: 2px; }
+
+  /* HERO */
+  .contact-hero {
+    min-height: 400px; background: var(--black);
+    display: flex; align-items: flex-end; padding: 68px 8% 72px;
+    position: relative; overflow: hidden;
+  }
+  .contact-hero-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #0a0a0a 60%, #1a1400 100%); }
+  .contact-hero-img { position: absolute; right: 0; top: 0; width: 50%; height: 100%; object-fit: cover; opacity: 0.2; }
+  .contact-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to right, var(--black) 40%, transparent 80%); }
+  .contact-hero-content { position: relative; z-index: 2; }
+  .breadcrumb { font-size: 12px; color: rgba(255,255,255,0.35); margin-bottom: 16px; }
+  .breadcrumb a { color: var(--yellow); }
+  .page-title { font-size: clamp(42px, 6vw, 80px); color: var(--white); line-height: 1.0; margin-bottom: 12px; }
+  .page-title span { color: var(--yellow); }
+  .page-desc { font-size: 15.5px; color: rgba(255,255,255,0.5); max-width: 500px; line-height: 1.75; }
+  .hero-yellow-line { position: absolute; bottom: 0; left: 8%; width: 80px; height: 3px; background: var(--yellow); }
+
+  /* CONTACT CARDS ROW */
+  .contact-cards-row { background: var(--yellow); padding: 0 8%; display: grid; grid-template-columns: repeat(3, 1fr); }
+  .contact-card {
+    padding: 40px 32px; display: flex; align-items: flex-start; gap: 18px;
+    border-right: 1px solid rgba(0,0,0,0.1); transition: background 0.2s; cursor: pointer;
+  }
+  .contact-card:last-child { border-right: none; }
+  .contact-card:hover { background: rgba(0,0,0,0.06); }
+  .contact-card-icon { width: 52px; height: 52px; background: var(--black); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .contact-card-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(0,0,0,0.45); font-weight: 600; margin-bottom: 4px; }
+  .contact-card-value { font-size: 16px; font-weight: 700; color: var(--black); margin-bottom: 2px; }
+  .contact-card-sub { font-size: 13px; color: rgba(0,0,0,0.5); }
+
+  /* MAIN CONTACT SECTION */
+  .contact-main { display: grid; grid-template-columns: 1fr 1fr; min-height: 700px; }
+  .contact-form-side { padding: 80px 8% 80px 8%; background: var(--white); }
+  .contact-info-side { background: var(--black); padding: 80px 7%; position: relative; overflow: hidden; }
+  .contact-info-side::before { content: ''; position: absolute; top: -100px; right: -100px; width: 400px; height: 400px; background: rgba(255,208,0,0.04); border-radius: 50%; }
+
+  .section-label { display: inline-block; font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: var(--yellow-dark); font-weight: 600; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid var(--yellow); }
+  .contact-form-title { font-size: clamp(26px, 3.5vw, 42px); margin-bottom: 8px; line-height: 1.2; }
+  .contact-form-sub { font-size: 14.5px; color: var(--text-muted); margin-bottom: 40px; line-height: 1.7; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-field { display: flex; flex-direction: column; }
+  .form-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+  .form-input { border: 1.5px solid #e8e8e8; border-radius: 8px; padding: 14px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 100%; outline: none; transition: border-color 0.2s, box-shadow 0.2s; background: var(--white); color: var(--black); }
+  .form-input:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,208,0,0.1); }
+  .form-input::placeholder { color: #bbb; }
+  textarea.form-input { min-height: 140px; resize: vertical; }
+  select.form-input { cursor: pointer; }
+  .form-submit { background: var(--yellow); color: var(--black); padding: 16px 40px; border-radius: 8px; font-size: 15px; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px; }
+  .form-submit:hover { background: var(--yellow-dark); transform: translateY(-1px); }
+  .form-note { font-size: 12.5px; color: #aaa; margin-top: 4px; }
+
+  /* SUCCESS STATE */
+  .form-success { display: none; text-align: center; padding: 60px 20px; }
+  .form-success-icon { font-size: 64px; margin-bottom: 20px; }
+  .form-success-title { font-size: 28px; margin-bottom: 10px; }
+  .form-success-sub { font-size: 15px; color: var(--text-muted); line-height: 1.7; margin-bottom: 28px; }
+
+  /* INFO SIDE */
+  .info-title { font-size: clamp(26px,3.5vw,40px); color: var(--white); margin-bottom: 8px; line-height: 1.2; }
+  .info-title span { color: var(--yellow); }
+  .info-sub { font-size: 14.5px; color: rgba(255,255,255,0.45); margin-bottom: 48px; line-height: 1.7; }
+  .info-items { display: flex; flex-direction: column; gap: 28px; margin-bottom: 56px; }
+  .info-item { display: flex; gap: 18px; align-items: flex-start; }
+  .info-icon { width: 48px; height: 48px; flex-shrink: 0; background: rgba(255,208,0,0.1); border: 1px solid rgba(255,208,0,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .info-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 4px; font-weight: 600; }
+  .info-value { font-size: 15px; color: rgba(255,255,255,0.88); font-weight: 500; margin-bottom: 2px; }
+  .info-value a { color: rgba(255,255,255,0.88); transition: color 0.2s; }
+  .info-value a:hover { color: var(--yellow); }
+  .info-sub-value { font-size: 13px; color: rgba(255,255,255,0.35); }
+  .info-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin: 8px 0; }
+
+  /* HOURS TABLE */
+  .hours-title { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+  .hours-grid { display: flex; flex-direction: column; gap: 8px; }
+  .hours-row { display: flex; justify-content: space-between; align-items: center; font-size: 13.5px; color: rgba(255,255,255,0.5); padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+  .hours-day { color: rgba(255,255,255,0.7); }
+  .hours-time { color: var(--yellow); font-weight: 600; }
+  .hours-tag { background: rgba(255,208,0,0.12); color: var(--yellow); padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+  /* SOCIAL ROW */
+  .social-row { display: flex; gap: 10px; margin-top: 40px; }
+  .social-btn { width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.12); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s; }
+  .social-btn:hover { border-color: var(--yellow); background: rgba(255,208,0,0.08); }
+
+  /* MAP SECTION */
+  .map-section { background: var(--gray); }
+  .map-inner { display: grid; grid-template-columns: 1fr 2fr; }
+  .map-info { padding: 60px 7%; background: var(--white); display: flex; flex-direction: column; justify-content: center; }
+  .map-title { font-size: 26px; margin-bottom: 12px; }
+  .map-sub { font-size: 14px; color: var(--text-muted); line-height: 1.75; margin-bottom: 28px; }
+  .map-address { background: var(--gray); border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; }
+  .map-address-line { font-size: 14px; color: #444; line-height: 1.8; }
+  .map-address-line strong { color: var(--black); font-weight: 600; }
+  .map-frame { width: 100%; height: 480px; border: none; filter: grayscale(20%); }
+  .btn-directions { display: inline-flex; align-items: center; gap: 8px; background: var(--yellow); color: var(--black); padding: 12px 24px; border-radius: 6px; font-size: 14px; font-weight: 700; border: none; cursor: pointer; transition: background 0.2s; }
+  .btn-directions:hover { background: var(--yellow-dark); }
+
+  /* FAQ SECTION */
+  .faq-section { padding: 88px 8%; background: var(--white); }
+  .faq-inner { display: grid; grid-template-columns: 1fr 2fr; gap: 80px; }
+  .faq-title { font-size: clamp(26px,3.5vw,40px); line-height: 1.2; }
+  .faq-title span { color: var(--yellow-dark); }
+  .faq-sub { font-size: 14.5px; color: var(--text-muted); line-height: 1.7; margin-top: 12px; }
+  .faq-list { display: flex; flex-direction: column; gap: 0; }
+  .faq-item { border-bottom: 1px solid #eee; }
+  .faq-question { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; gap: 16px; }
+  .faq-q-text { font-size: 15.5px; font-weight: 600; color: var(--black); }
+  .faq-toggle { width: 28px; height: 28px; flex-shrink: 0; background: var(--yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--black); transition: transform 0.3s; }
+  .faq-item.open .faq-toggle { transform: rotate(45deg); }
+  .faq-answer { font-size: 14px; color: var(--text-muted); line-height: 1.75; max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.3s ease; }
+  .faq-item.open .faq-answer { max-height: 300px; padding-bottom: 20px; }
+
+  /* CTA BAND */
+  .cta-band { background: var(--yellow); padding: 72px 8%; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .cta-band-title { font-size: clamp(26px,3.5vw,44px); color: var(--black); max-width: 520px; line-height: 1.2; }
+  .btn-black { background: var(--black); color: var(--white); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
+  .btn-black:hover { background: #222; }
+
+  /* FOOTER */
+  footer { background: #060606; border-top: 1px solid rgba(255,208,0,0.1); padding: 60px 8% 32px; color: rgba(255,255,255,0.7); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 48px; }
+  .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .footer-logo-mark { width: 34px; height: 34px; background: var(--yellow); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 900; color: var(--black); }
+  .footer-logo-name { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); font-weight: 700; }
+  .footer-about p { font-size: 13.5px; line-height: 1.75; max-width: 280px; }
+  .footer-col h4 { font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 13.5px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 28px; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 12.5px; color: rgba(255,255,255,0.3); }
+
+  /* ANIMATE */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .contact-hero-content { animation: fadeUp 0.6s ease both; }
+  .contact-cards-row { animation: fadeUp 0.6s 0.15s ease both; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) { .contact-main { grid-template-columns: 1fr; } .map-inner { grid-template-columns: 1fr; } .map-frame { height: 320px; } .faq-inner { grid-template-columns: 1fr; gap: 40px; } }
+  @media (max-width: 768px) {
+    .contact-cards-row { grid-template-columns: 1fr; }
+    .contact-card { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.1); }
+    .contact-card:last-child { border-bottom: none; }
+    .form-row { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .cta-band { justify-content: center; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">JX</div>
+    <span class="nav-logo-text">Jux<span>Drive</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#drivers">About Us</a>
+    <a href="services.html">Services</a>
+    <a href="drivers.html">Drivers</a>
+    <a href="fleet.html">Fleet</a>
+    <a href="contact.html" class="active">Contact Us</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('contact-form').scrollIntoView({behavior:'smooth'})">Book a Driver</button>
+  <div class="nav-hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<div class="contact-hero">
+  <div class="contact-hero-bg"></div>
+  <img class="contact-hero-img" src="https://images.unsplash.com/photo-1571757111682-b3e81d5c7f09?w=1200&q=80" alt="Chauffeur">
+  <div class="contact-hero-overlay"></div>
+  <div class="hero-yellow-line"></div>
+  <div class="contact-hero-content">
+    <div class="breadcrumb"><a href="index.html">Home</a> → Contact Us</div>
+    <h1 class="page-title">Have a <span>Question?</span><br>Get in Touch.</h1>
+    <p class="page-desc">Our team is available to assist with bookings, pricing, and any other inquiries. We respond within 2 business hours.</p>
+  </div>
+</div>
+
+<!-- CONTACT CARDS -->
+<div class="contact-cards-row">
+  <a href="tel:+233574002145" class="contact-card">
+    <div class="contact-card-icon">📞</div>
+    <div>
+      <div class="contact-card-label">Call Us</div>
+      <div class="contact-card-value">+(233) 57 400 2145</div>
+      <div class="contact-card-sub">Mon – Sun, 6am – 10pm</div>
+    </div>
+  </a>
+  <a href="mailto:info@juxdrive.org" class="contact-card">
+    <div class="contact-card-icon">✉️</div>
+    <div>
+      <div class="contact-card-label">Email Us</div>
+      <div class="contact-card-value">info@juxdrive.org</div>
+      <div class="contact-card-sub">Reply within 2 business hours</div>
+    </div>
+  </a>
+  <div class="contact-card">
+    <div class="contact-card-icon">📍</div>
+    <div>
+      <div class="contact-card-label">Visit Us</div>
+      <div class="contact-card-value">13 Amli Street, Adenta</div>
+      <div class="contact-card-sub">East Legon, Accra, Ghana</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN FORM + INFO -->
+<div class="contact-main" id="contact-form">
+  <!-- FORM SIDE -->
+  <div class="contact-form-side reveal">
+    <span class="section-label">Send a Message</span>
+    <h2 class="contact-form-title">We'd Love to<br>Hear From You</h2>
+    <p class="contact-form-sub">Whether it's a booking enquiry, a question about our services, or feedback — fill in the form and we'll get back to you promptly.</p>
+
+    <div id="form-wrap">
+      <div class="contact-form">
+        <div class="form-row">
+          <div class="form-field">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" type="text" placeholder="Your full name" id="f-name">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Phone Number</label>
+            <input class="form-input" type="tel" placeholder="+233 XX XXX XXXX" id="f-phone">
+          </div>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" type="email" placeholder="you@email.com" id="f-email">
+        </div>
+        <div class="form-field">
+          <label class="form-label">Subject</label>
+          <select class="form-input" id="f-subject">
+            <option value="">Select a topic</option>
+            <option>General Enquiry</option>
+            <option>Booking Request</option>
+            <option>Pricing Information</option>
+            <option>Driver Partnership</option>
+            <option>Corporate Account</option>
+            <option>Feedback / Complaint</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Message</label>
+          <textarea class="form-input" placeholder="Tell us how we can help..." id="f-message"></textarea>
+        </div>
+        <div>
+          <button class="form-submit" onclick="submitForm()">Send Message →</button>
+          <div class="form-note">We typically respond within 2 hours during business hours.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-success" id="form-success">
+      <div class="form-success-icon">✅</div>
+      <h3 class="form-success-title">Message Sent!</h3>
+      <p class="form-success-sub">Thank you for reaching out. A member of the JuxDrive team will get back to you within 2 business hours at the email or number you provided.</p>
+      <button onclick="resetForm()" style="background:var(--yellow);color:var(--black);padding:12px 28px;border:none;border-radius:6px;font-size:14px;font-weight:700;cursor:pointer;">Send Another</button>
+    </div>
+  </div>
+
+  <!-- INFO SIDE -->
+  <div class="contact-info-side reveal">
+    <span style="display:inline-block;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,208,0,0.8);font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--yellow);">Get In Touch</span>
+    <h2 class="info-title">Contact<br><span>Information</span></h2>
+    <p class="info-sub">Reach us through any of the channels below. Our dispatch team is available 7 days a week.</p>
+
+    <div class="info-items">
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div>
+          <div class="info-label">Phone</div>
+          <div class="info-value"><a href="tel:+233574002145">+(233) 57 400 2145</a></div>
+          <div class="info-sub-value"><a href="tel:+233574002145" style="color:rgba(255,255,255,0.35);">+(233) 57 400 2145</a></div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">✉️</div>
+        <div>
+          <div class="info-label">Email</div>
+          <div class="info-value"><a href="mailto:info@juxdrive.org">info@juxdrive.org</a></div>
+          <div class="info-sub-value">For corporate enquiries: <a href="mailto:info@juxdrive.org" style="color:rgba(255,255,255,0.35);">info@juxdrive.org</a></div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-label">Address</div>
+          <div class="info-value">13 Amli Street, Adenta Municipality</div>
+          <div class="info-sub-value">East Legon, Accra, Ghana</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="info-divider">
+
+    <div class="hours-title">Operating Hours</div>
+    <div class="hours-grid">
+      <div class="hours-row"><span class="hours-day">Monday – Friday</span><span class="hours-time">6:00 AM – 10:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Saturday</span><span class="hours-time">7:00 AM – 10:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Sunday</span><span class="hours-time">8:00 AM – 8:00 PM</span></div>
+      <div class="hours-row"><span class="hours-day">Emergency / Overnight</span><span class="hours-tag">24/7 Available</span></div>
+    </div>
+
+    <div class="social-row">
+      <a href="#" class="social-btn" title="Facebook">📘</a>
+      <a href="#" class="social-btn" title="Instagram">📸</a>
+      <a href="#" class="social-btn" title="Twitter / X">🐦</a>
+      <a href="#" class="social-btn" title="YouTube">▶️</a>
+      <a href="#" class="social-btn" title="LinkedIn">💼</a>
+      <a href="https://wa.me/233574002145" class="social-btn" title="WhatsApp">💬</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAP -->
+<div class="map-section">
+  <div class="map-inner">
+    <div class="map-info reveal">
+      <h3 class="map-title">Find Us in Accra</h3>
+      <p class="map-sub">We're based in East Legon, Accra — but our drivers operate across Greater Accra Region and beyond, including inter-city routes.</p>
+      <div class="map-address">
+        <div class="map-address-line"><strong>JuxDrive Chauffeuring</strong></div>
+        <div class="map-address-line">13 Amli Street</div>
+        <div class="map-address-line">Adenta Municipality</div>
+        <div class="map-address-line">East Legon, Accra</div>
+        <div class="map-address-line">Ghana</div>
+      </div>
+      <a href="https://maps.google.com/?q=East+Legon+Accra+Ghana" target="_blank" class="btn-directions">
+        <span>📍</span> Get Directions
+      </a>
+    </div>
+    <div>
+      <iframe
+        class="map-frame"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15883.789012345678!2d-0.1541!3d5.6315!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9084b2d34a333%3A0xd3a4ac4edc8d5c26!2sEast%20Legon%2C%20Accra%2C%20Ghana!5e0!3m2!1sen!2s!4v1680000000000!5m2!1sen!2s"
+        allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="reveal">
+      <span class="section-label">FAQ</span>
+      <h2 class="faq-title">Common<br><span>Questions</span></h2>
+      <p class="faq-sub">Can't find the answer you need? Send us a message above and we'll respond within 2 hours.</p>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How do I book a driver?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">You can book directly through our website using the "Book a Driver" button, call us at +(233) 57 400 2145, or send an email to info@juxdrive.org. A team member will confirm your booking within 30 minutes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Can the driver use my own car?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Yes — this is one of our most popular services. Our professional chauffeurs can drive your personal vehicle. Simply provide the car details at booking and we'll match you with an appropriately licensed driver.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How much does a booking cost?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Pricing starts at GH₵80 for standard bookings and varies based on service type, distance, duration, and vehicle class. Use our fare calculator on the homepage for an instant estimate, or contact us directly for a custom quote.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">Do you operate outside of Accra?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Yes. We cover Greater Accra Region and offer overnight and inter-city trips across Ghana, including Cape Coast, Kumasi, Takoradi, and other major cities. Contact us for pricing on long-distance routes.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">How will I know where my driver is?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">On the day of your ride, you'll receive real-time SMS and email updates on your driver's current location throughout the journey. You'll also receive the driver's contact number when your booking is confirmed.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span class="faq-q-text">What is your cancellation policy?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Cancellations made more than 24 hours before the booking are fully refunded. Cancellations within 24 hours may incur a partial charge. Please contact us as early as possible if your plans change.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2 class="cta-band-title">Ready to book your next JuxDrive experience?</h2>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;">
+    <a href="tel:+233574002145" class="btn-black">📞 Call Us Now</a>
+    <a href="services.html" style="background:transparent;color:var(--black);padding:13px 32px;border-radius:4px;font-size:14px;font-weight:500;border:1.5px solid rgba(0,0,0,0.3);display:inline-block;cursor:pointer;">View Services</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="footer-logo-mark">JX</div><span class="footer-logo-name">JuxDrive</span></div>
+      <p>Premium chauffeur services across Ghana. Professional, safe, and reliable transportation for all occasions.</p>
+    </div>
+    <div class="footer-col"><h4>Services</h4><div class="footer-links"><a href="services.html">Wedding Rides</a><a href="services.html">Business Trips</a><a href="services.html">Overnight Trips</a><a href="services.html">Airport Pickups</a></div></div>
+    <div class="footer-col"><h4>Company</h4><div class="footer-links"><a href="index.html">Home</a><a href="drivers.html">Our Drivers</a><a href="fleet.html">Our Fleet</a><a href="contact.html">Contact</a></div></div>
+    <div class="footer-col"><h4>Contact</h4><p style="font-size:13px;line-height:1.9;">📞 +(233) 57 400 2145<br>✉️ info@juxdrive.org<br>📍 East Legon, Accra, Ghana</p></div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom"><span class="footer-copy">© 2025 JuxDrive Chauffeuring. All rights reserved.</span></div>
+</footer>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient('https://eyuoejjewuzxouirymze.supabase.co','sb_publishable_TtgDPqo5tnX-bpiu3AclgQ_Jzg6M-y_');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  async function submitForm() {
+    const name    = document.getElementById('f-name').value.trim();
+    const phone   = document.getElementById('f-phone').value.trim();
+    const email   = document.getElementById('f-email').value.trim();
+    const subject = document.getElementById('f-subject').value;
+    const message = document.getElementById('f-message').value.trim();
+
+    if (!name || !email || !message) {
+      alert('Please fill in your name, email, and message.'); return;
+    }
+
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = 'Sending…'; btn.disabled = true;
+
+    try {
+      const { error } = await supabase.from('contact_messages').insert([{
+        full_name: name, phone, email, subject, message, status: 'unread'
+      }]);
+      if (error) throw error;
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('form-success').style.display = 'block';
+    } catch(err) {
+      btn.textContent = 'Send Message →'; btn.disabled = false;
+      alert('Could not send message. Please email us directly at info@juxdrive.org'); console.error(err);
+    }
+  }
+
+  function resetForm() {
+    document.getElementById('form-wrap').style.display = 'block';
+    document.getElementById('form-success').style.display = 'none';
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-phone').value = '';
+    document.getElementById('f-email').value = '';
+    document.getElementById('f-subject').value = '';
+    document.getElementById('f-message').value = '';
+    const btn = document.querySelector('.form-submit');
+    btn.textContent = 'Send Message →'; btn.disabled = false;
+  }
+
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    document.querySelectorAll('.faq-item').forEach(i => { if (i !== item) i.classList.remove('open'); });
+    item.classList.toggle('open');
+  }
+
+  window.submitForm = submitForm;
+  window.resetForm = resetForm;
+  window.toggleFaq = toggleFaq;
+</script>
+</body>
+</html>

@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JuxDrive — Chauffeur at Your Service</title>
+
+<!-- ═══ UPGRADED FONTS (from Stitch design system) ═══ -->
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════════════════
+   JUXDRIVE DESIGN SYSTEM v2.0
+   Inspired by Stitch reference + JuxDrive brand
+═══════════════════════════════════════════════════ */
+:root {
+  /* Brand Colours */
+  --yellow:       #FFD000;
+  --yellow-dim:   #E9C400;
+  --yellow-glow:  rgba(255,208,0,0.12);
+  --yellow-soft:  rgba(255,208,0,0.06);
+  --black:        #0E0E0E;
+  --surface:      #131313;
+  --surface-2:    #1a1a1a;
+  --surface-3:    #222222;
+  --border:       rgba(255,255,255,0.08);
+  --border-gold:  rgba(255,208,0,0.18);
+  --white:        #FFFFFF;
+  --text:         #e2e2e2;
+  --text-muted:   rgba(255,255,255,0.45);
+  --text-faint:   rgba(255,255,255,0.25);
+
+  /* Spacing (from Stitch) */
+  --pad-desktop: 80px;
+  --pad-mobile:  20px;
+  --gutter:      24px;
+  --unit:        8px;
+
+  /* Typography (from Stitch) */
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'Plus Jakarta Sans', sans-serif;
+
+  /* Border radius (from Stitch) */
+  --r-sm:  4px;
+  --r-md:  8px;
+  --r-lg:  12px;
+  --r-xl:  16px;
+  --r-2xl: 24px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--black);
+  color: var(--text);
+  overflow-x: hidden;
+  /* Radial gold glow from Stitch */
+  background-image: radial-gradient(circle at 50% 0%, rgba(255,208,0,0.05) 0%, var(--black) 60%);
+}
+img { max-width:100%; display:block; }
+a { text-decoration:none; color:inherit; }
+
+/* ─── TYPOGRAPHY SCALE (from Stitch) ─── */
+.t-display  { font-family:var(--font-display); font-size:clamp(52px,8vw,88px); font-weight:800; line-height:1.05; letter-spacing:-0.02em; }
+.t-headline { font-family:var(--font-display); font-size:clamp(32px,5vw,52px); font-weight:700; line-height:1.15; letter-spacing:-0.01em; }
+.t-subhead  { font-family:var(--font-body);    font-size:clamp(16px,2vw,20px); font-weight:600; line-height:1.5; letter-spacing:0.04em; }
+.t-label    { font-family:var(--font-body);    font-size:14px; font-weight:700; line-height:1; letter-spacing:0.18em; text-transform:uppercase; }
+.t-body     { font-family:var(--font-body);    font-size:16px; font-weight:400; line-height:1.7; }
+.t-small    { font-family:var(--font-body);    font-size:13px; line-height:1.6; }
+.col-yellow { color:var(--yellow); }
+.col-muted  { color:var(--text-muted); }
+
+/* ─── GLASS PANEL (from Stitch) ─── */
+.glass {
+  backdrop-filter: blur(20px);
+  background: rgba(26,26,26,0.75);
+  border: 1px solid var(--border);
+}
+.glass-gold {
+  backdrop-filter: blur(20px);
+  background: rgba(26,26,26,0.75);
+  border: 1px solid var(--border-gold);
+}
+
+/* ─── SHIMMER BUTTON (from Stitch) ─── */
+.btn-primary {
+  position:relative; overflow:hidden;
+  background: var(--yellow); color: var(--black);
+  padding:14px 36px; border-radius:var(--r-md);
+  font-family:var(--font-body); font-size:14px; font-weight:700;
+  letter-spacing:0.12em; text-transform:uppercase;
+  border:none; cursor:pointer;
+  transition:transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s;
+  display:inline-block; white-space:nowrap;
+}
+.btn-primary::after {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%);
+  background-size:200% 100%;
+  opacity:0; transition:opacity 0.3s;
+}
+.btn-primary:hover::after { opacity:1; animation:shimmer 1.4s infinite; }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(255,208,0,0.32); }
+.btn-primary:active { transform:translateY(0); }
+
+.btn-ghost {
+  background:transparent; color:var(--text);
+  padding:13px 32px; border-radius:var(--r-md);
+  font-family:var(--font-body); font-size:14px; font-weight:600;
+  letter-spacing:0.1em; text-transform:uppercase;
+  border:1px solid var(--border); cursor:pointer;
+  transition:all 0.25s cubic-bezier(0.22,1,0.36,1);
+  display:inline-block;
+}
+.btn-ghost:hover { border-color:var(--yellow); color:var(--yellow); transform:translateY(-2px); }
+
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ─── SECTION LABEL (Stitch style) ─── */
+.section-label {
+  display:inline-block;
+  font-family:var(--font-body); font-size:12px; font-weight:700;
+  letter-spacing:0.22em; text-transform:uppercase;
+  color:var(--yellow-dim); margin-bottom:14px;
+}
+.section-label::before {
+  content:''; display:inline-block;
+  width:24px; height:1.5px; background:var(--yellow-dim);
+  margin-right:10px; vertical-align:middle;
+}
+
+/* ─── SCROLL BAR + PROGRESS ─── */
+#scroll-bar { position:fixed; top:0; left:0; height:2px; background:var(--yellow); z-index:9999; width:0%; box-shadow:0 0 10px rgba(255,208,0,0.7); }
+
+/* ─── NAV — GLASS (from Stitch) ─── */
+nav {
+  position:fixed; top:0; width:100%; z-index:1000; height:72px;
+  backdrop-filter:blur(24px);
+  background:rgba(14,14,14,0.85);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 var(--pad-desktop);
+  animation: nav-in 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  transition:background 0.3s, border-color 0.3s;
+}
+@keyframes nav-in { from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)} }
+.nav-logo { display:flex; align-items:center; gap:12px; }
+.nav-logo-mark {
+  width:40px; height:40px; background:var(--yellow); border-radius:var(--r-md);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:800; font-size:17px; color:var(--black);
+}
+.nav-brand { font-family:var(--font-display); font-size:21px; font-weight:800; color:var(--white); letter-spacing:-0.01em; }
+.nav-brand span { color:var(--yellow); }
+.nav-links { display:flex; gap:36px; align-items:center; }
+.nav-link {
+  font-family:var(--font-body); font-size:13.5px; font-weight:600;
+  letter-spacing:0.06em; color:var(--text-muted);
+  transition:color 0.2s; position:relative;
+}
+.nav-link::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:1.5px; background:var(--yellow); transition:width 0.3s cubic-bezier(0.22,1,0.36,1); }
+.nav-link:hover { color:var(--yellow); }
+.nav-link:hover::after, .nav-link.active::after { width:100%; }
+.nav-link.active { color:var(--yellow); }
+.nav-cta-wrap { display:flex; align-items:center; gap:12px; }
+
+/* ─── HERO ─── */
+#hero {
+  min-height:100vh; position:relative; overflow:hidden;
+  display:flex; align-items:center;
+  padding:72px var(--pad-desktop) 0;
+  /* Stitch radial glow */
+  background: radial-gradient(ellipse at 30% 60%, rgba(255,208,0,0.07) 0%, transparent 55%),
+              radial-gradient(ellipse at 80% 20%, rgba(255,208,0,0.04) 0%, transparent 45%),
+              var(--black);
+}
+/* Diagonal yellow slash — brand element */
+.hero-slash {
+  position:absolute; right:0; top:0; bottom:0; width:48%;
+  clip-path: polygon(22% 0%, 100% 0%, 100% 100%, 0% 100%);
+  background: linear-gradient(135deg, rgba(255,208,0,0.04) 0%, rgba(255,208,0,0.01) 100%);
+  border-left:1px solid var(--border-gold);
+  z-index:0;
+}
+.hero-slash-inner {
+  position:absolute; right:0; top:0; bottom:0; width:42%;
+  overflow:hidden; clip-path: polygon(22% 0%, 100% 0%, 100% 100%, 0% 100%);
+  z-index:1;
+}
+/* Car placeholder — right side */
+.hero-car-placeholder {
+  position:absolute; right:4%; bottom:0; width:48%; z-index:2;
+  display:flex; align-items:flex-end; justify-content:center;
+}
+.car-ph {
+  width:100%; max-width:660px;
+  background:linear-gradient(145deg, rgba(255,208,0,0.06), rgba(255,208,0,0.02));
+  border:1px dashed rgba(255,208,0,0.2);
+  border-radius:var(--r-xl) var(--r-xl) 0 0;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:48px 32px 32px;
+  min-height:360px; position:relative;
+}
+.car-ph-icon { font-size:72px; opacity:0.25; margin-bottom:16px; }
+.car-ph-label { font-family:var(--font-body); font-size:13px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); }
+.car-ph-sub { font-size:11px; color:var(--text-faint); margin-top:6px; letter-spacing:0.1em; }
+.car-ph-badge {
+  position:absolute; top:20px; right:20px;
+  background:var(--yellow-glow); border:1px solid var(--border-gold);
+  padding:5px 14px; border-radius:20px;
+  font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--yellow);
+}
+
+.hero-content { position:relative; z-index:3; max-width:620px; padding:80px 0; }
+.hero-eyebrow { display:flex; align-items:center; gap:10px; margin-bottom:24px; animation:fade-up 0.7s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-eyebrow-line { width:32px; height:2px; background:var(--yellow); }
+.hero-eyebrow-text { font-family:var(--font-body); font-size:12px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--yellow); }
+.hero-title { animation:fade-up 0.8s 0.2s cubic-bezier(0.22,1,0.36,1) both; margin-bottom:20px; }
+.hero-sub { animation:fade-up 0.8s 0.35s cubic-bezier(0.22,1,0.36,1) both; color:var(--text-muted); max-width:480px; margin-bottom:12px; }
+.hero-tagline { font-size:13px; color:var(--text-faint); font-style:italic; margin-bottom:40px; animation:fade-up 0.8s 0.45s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-btns { display:flex; gap:16px; flex-wrap:wrap; animation:fade-up 0.8s 0.55s cubic-bezier(0.22,1,0.36,1) both; margin-bottom:60px; }
+.hero-stats { display:flex; gap:48px; animation:fade-up 0.8s 0.75s cubic-bezier(0.22,1,0.36,1) both; }
+.hero-stat-num { font-family:var(--font-display); font-size:32px; font-weight:800; color:var(--yellow); letter-spacing:-0.02em; }
+.hero-stat-label { font-size:12px; color:var(--text-muted); margin-top:3px; letter-spacing:0.06em; }
+/* Bounce scroll indicator */
+.scroll-hint { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); z-index:3; display:flex; flex-direction:column; align-items:center; gap:6px; animation:bounce 2s 2s ease-in-out infinite; }
+.scroll-hint-line { width:1px; height:40px; background:linear-gradient(to bottom, transparent, var(--yellow)); }
+.scroll-hint-text { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); }
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+
+/* ─── GALLERY ─── */
+#gallery { background:var(--surface); padding:0; overflow:hidden; }
+.gallery-label { text-align:center; padding:56px var(--pad-desktop) 32px; }
+.gallery-strip { display:flex; gap:8px; padding:0 var(--pad-desktop) 64px; overflow-x:auto; scrollbar-width:none; }
+.gallery-strip::-webkit-scrollbar { display:none; }
+.gallery-item { flex:0 0 180px; height:240px; border-radius:var(--r-lg); overflow:hidden; background:var(--surface-2); position:relative; }
+.gallery-item.tall { flex:0 0 220px; height:300px; }
+.gallery-item img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s; }
+.gallery-item:hover img { transform:scale(1.06); }
+/* Gallery placeholders */
+.gallery-ph { width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; background:linear-gradient(135deg, var(--surface-2), var(--surface-3)); border:1px dashed rgba(255,208,0,0.1); }
+.gallery-ph-icon { font-size:32px; opacity:0.2; margin-bottom:8px; }
+.gallery-ph-text { font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-faint); }
+
+/* ─── HOW IT WORKS ─── */
+#how { padding:96px var(--pad-desktop); background:var(--black); }
+.steps-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:var(--gutter); margin-top:60px; }
+.step-card {
+  padding:40px 32px; border-radius:var(--r-xl);
+  background:var(--surface-2); border:1px solid var(--border);
+  position:relative; overflow:hidden;
+  transition:border-color 0.3s, transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s;
+}
+.step-card::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(to right, transparent, var(--yellow), transparent); opacity:0; transition:opacity 0.3s; }
+.step-card:hover { border-color:var(--border-gold); transform:translateY(-6px); box-shadow:0 20px 48px rgba(0,0,0,0.4); }
+.step-card:hover::before { opacity:1; }
+.step-num {
+  position:absolute; top:-12px; left:32px;
+  width:36px; height:36px; background:var(--yellow); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-size:16px; font-weight:800; color:var(--black);
+}
+.step-icon { font-size:32px; margin:16px 0 20px; }
+.step-title { font-family:var(--font-display); font-size:22px; font-weight:700; color:var(--white); margin-bottom:12px; }
+.step-desc { font-size:14px; color:var(--text-muted); line-height:1.75; }
+
+/* ─── DISCOVER LUXURY BANNER ─── */
+#luxury {
+  display:grid; grid-template-columns:1fr 1fr; min-height:480px; overflow:hidden;
+  background:var(--black);
+}
+.luxury-left {
+  padding:80px var(--pad-desktop); display:flex; flex-direction:column; justify-content:center;
+  position:relative;
+  background:linear-gradient(135deg, var(--black) 60%, rgba(255,208,0,0.04));
+}
+.luxury-tag { font-size:11px; font-weight:700; letter-spacing:0.22em; text-transform:uppercase; color:var(--yellow); margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+.luxury-tag::before { content:''; width:20px; height:1.5px; background:var(--yellow); }
+.luxury-title { font-family:var(--font-display); font-size:clamp(56px,7vw,96px); font-weight:800; line-height:0.95; letter-spacing:-0.03em; color:var(--white); margin-bottom:32px; }
+.luxury-title em { color:var(--yellow); font-style:normal; }
+.luxury-right { position:relative; overflow:hidden; background:var(--surface-2); }
+.luxury-right img { width:100%; height:100%; object-fit:cover; opacity:0.75; transition:transform 0.6s, opacity 0.6s; }
+#luxury:hover .luxury-right img { transform:scale(1.04); opacity:0.9; }
+/* Luxury car placeholder */
+.luxury-ph {
+  width:100%; height:100%; min-height:480px;
+  background:linear-gradient(135deg, var(--surface-2) 0%, var(--surface-3) 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  border-left:1px dashed rgba(255,208,0,0.15);
+}
+.luxury-ph-car { font-size:96px; opacity:0.12; margin-bottom:20px; }
+.luxury-ph-text { font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); font-weight:700; }
+.luxury-ph-note { font-size:11px; color:var(--text-faint); margin-top:8px; opacity:0.6; }
+.luxury-ph-badge { margin-top:24px; background:var(--yellow-glow); border:1px solid var(--border-gold); padding:6px 18px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:var(--yellow); }
+
+/* ─── SERVICES — BENTO GRID (from Stitch) ─── */
+#services { padding:96px var(--pad-desktop); background:var(--surface); }
+.services-intro { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:48px; gap:40px; }
+.services-intro-text { max-width:520px; }
+.bento-grid { display:grid; grid-template-columns:repeat(12, 1fr); grid-template-rows:repeat(2, 280px); gap:16px; }
+.bento-card {
+  border-radius:var(--r-xl); overflow:hidden; position:relative;
+  cursor:pointer;
+  transition:transform 0.35s cubic-bezier(0.22,1,0.36,1);
+}
+.bento-card:hover { transform:scale(1.015); }
+.bento-1 { grid-column:span 8; grid-row:span 1; }
+.bento-2 { grid-column:span 4; grid-row:span 2; }
+.bento-3 { grid-column:span 4; grid-row:span 1; }
+.bento-4 { grid-column:span 4; grid-row:span 1; }
+.bento-bg {
+  position:absolute; inset:0; background-size:cover; background-position:center;
+  transition:opacity 0.4s; opacity:0.35;
+}
+.bento-card:hover .bento-bg { opacity:0.55; }
+/* Bento card placeholders */
+.bento-ph { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:var(--surface-3); }
+.bento-ph-icon { font-size:48px; opacity:0.15; }
+.bento-glass {
+  position:absolute; inset:0; z-index:2;
+  background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.1) 60%);
+}
+.bento-content { position:absolute; bottom:0; left:0; right:0; z-index:3; padding:28px 28px 24px; }
+.bento-num { font-family:var(--font-display); font-size:48px; font-weight:800; color:rgba(255,208,0,0.12); line-height:1; margin-bottom:4px; }
+.bento-icon { font-size:24px; margin-bottom:10px; display:block; }
+.bento-title { font-family:var(--font-display); font-size:24px; font-weight:700; color:var(--white); margin-bottom:6px; }
+.bento-tall .bento-title { font-size:28px; }
+.bento-desc { font-size:13px; color:rgba(255,255,255,0.6); line-height:1.65; max-width:320px; }
+.bento-arrow { display:inline-flex; align-items:center; gap:6px; margin-top:14px; font-size:13px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--yellow); transition:gap 0.2s; }
+.bento-card:hover .bento-arrow { gap:12px; }
+.services-cta { text-align:center; margin-top:48px; }
+
+/* ─── DRIVERS ─── */
+#drivers { padding:96px var(--pad-desktop); background:var(--black); }
+.drivers-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.driver-card-wrap { display:flex; flex-direction:column; gap:16px; }
+.driver-card {
+  background:var(--surface-2); border:1px solid var(--border);
+  border-radius:var(--r-xl); padding:28px;
+  transition:border-color 0.3s, transform 0.3s cubic-bezier(0.22,1,0.36,1);
+}
+.driver-card:hover { border-color:var(--border-gold); transform:translateY(-3px); }
+.driver-name { font-family:var(--font-display); font-size:22px; font-weight:700; color:var(--white); margin-bottom:2px; }
+.driver-role { font-size:12px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); margin-bottom:12px; }
+.driver-bio { font-size:14px; color:var(--text-muted); line-height:1.7; margin-bottom:14px; }
+.driver-badge { display:inline-block; background:var(--yellow-glow); border:1px solid var(--border-gold); padding:4px 14px; border-radius:20px; font-size:11px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--yellow); }
+.drivers-image { position:relative; border-radius:var(--r-2xl); overflow:hidden; }
+.drivers-image img { width:100%; height:520px; object-fit:cover; border-radius:var(--r-2xl); }
+/* Driver image placeholder */
+.driver-img-ph {
+  width:100%; height:520px; border-radius:var(--r-2xl);
+  background:linear-gradient(145deg, var(--surface-2) 0%, var(--surface-3) 100%);
+  border:1px dashed rgba(255,208,0,0.15);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.driver-img-ph-icon { font-size:80px; opacity:0.12; margin-bottom:16px; }
+.driver-img-ph-text { font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); font-weight:700; }
+.drivers-image-badge {
+  position:absolute; bottom:24px; left:24px; right:24px;
+  backdrop-filter:blur(16px); background:rgba(14,14,14,0.85);
+  border:1px solid var(--border-gold); border-radius:var(--r-lg);
+  padding:18px 22px; display:flex; align-items:center; gap:14px;
+}
+.badge-icon-wrap { width:44px; height:44px; background:var(--yellow); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.badge-title { font-size:14px; font-weight:700; color:var(--white); margin-bottom:2px; }
+.badge-sub { font-size:12px; color:var(--text-muted); }
+
+/* ─── CALCULATOR ─── */
+#calculator { padding:96px var(--pad-desktop); background:var(--surface); }
+.calc-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.calc-form { display:flex; flex-direction:column; gap:14px; margin-top:40px; }
+.calc-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.calc-input {
+  background:rgba(255,255,255,0.04); border:1px solid var(--border);
+  color:var(--white); padding:14px 18px; border-radius:var(--r-md);
+  font-family:var(--font-body); font-size:14px; width:100%;
+  outline:none; transition:border-color 0.2s;
+}
+.calc-input:focus { border-color:var(--yellow); }
+.calc-input::placeholder { color:var(--text-faint); }
+select.calc-input option { background:#1a1a1a; }
+.calc-result {
+  background:var(--yellow); border-radius:var(--r-2xl);
+  padding:48px 40px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  box-shadow:0 24px 64px rgba(255,208,0,0.2);
+}
+.calc-result-label { font-size:11px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:rgba(0,0,0,0.5); }
+.calc-result-price { font-family:var(--font-display); font-size:64px; font-weight:800; letter-spacing:-0.02em; color:var(--black); line-height:1; }
+.calc-result-note { font-size:13px; color:rgba(0,0,0,0.4); margin-bottom:16px; }
+
+/* ─── WHY CHOOSE US ─── */
+#why { padding:96px var(--pad-desktop); background:var(--black); }
+.why-grid { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; margin-top:60px; }
+.why-features { display:flex; flex-direction:column; gap:28px; }
+.why-item { display:flex; gap:20px; align-items:flex-start; padding:24px; border-radius:var(--r-lg); border:1px solid var(--border); background:var(--surface-2); transition:border-color 0.3s, transform 0.3s; }
+.why-item:hover { border-color:var(--border-gold); transform:translateX(4px); }
+.why-icon { width:52px; height:52px; flex-shrink:0; background:var(--yellow-glow); border:1px solid var(--border-gold); border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-size:22px; transition:background 0.3s; }
+.why-item:hover .why-icon { background:var(--yellow); }
+.why-title { font-family:var(--font-display); font-size:18px; font-weight:700; color:var(--white); margin-bottom:6px; }
+.why-desc { font-size:13.5px; color:var(--text-muted); line-height:1.7; }
+.why-visual { border-radius:var(--r-2xl); overflow:hidden; position:relative; }
+.why-visual img { width:100%; height:100%; object-fit:cover; border-radius:var(--r-2xl); }
+/* Why visual placeholder */
+.why-ph {
+  width:100%; aspect-ratio:4/5; border-radius:var(--r-2xl);
+  background:linear-gradient(145deg, var(--surface-2) 0%, var(--surface-3) 100%);
+  border:1px dashed rgba(255,208,0,0.12);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+}
+.why-ph-icon { font-size:64px; opacity:0.12; margin-bottom:14px; }
+.why-ph-text { font-size:12px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-faint); font-weight:700; }
+
+/* ─── FLEET ─── */
+#fleet { padding:96px var(--pad-desktop); background:var(--surface); }
+.fleet-brands { display:flex; flex-wrap:wrap; gap:0; margin-top:48px; border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; }
+.brand-item { flex:1 1 calc(100%/7); min-width:110px; padding:28px 16px; display:flex; flex-direction:column; align-items:center; gap:10px; border-right:1px solid var(--border); transition:background 0.25s, transform 0.25s; }
+.brand-item:last-child { border-right:none; }
+.brand-item:hover { background:var(--yellow-glow); transform:scale(1.04); }
+.brand-icon { font-size:26px; }
+.brand-name { font-size:12px; font-weight:700; letter-spacing:0.06em; color:var(--text-muted); text-align:center; }
+.affiliates-title { font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:var(--text-muted); margin:52px 0 24px; text-align:center; font-weight:700; }
+.affiliates-strip { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+.affiliate-pill { background:var(--surface-2); border:1px solid var(--border); padding:10px 22px; border-radius:var(--r-lg); font-size:13px; font-weight:600; color:var(--text-muted); transition:all 0.2s; }
+.affiliate-pill:hover { border-color:var(--border-gold); color:var(--yellow); transform:translateY(-2px); }
+
+/* ─── TESTIMONIALS ─── */
+#testimonials { padding:96px var(--pad-desktop); background:var(--yellow); overflow:hidden; }
+.testi-head { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start; margin-bottom:56px; }
+.testi-big-title { font-family:var(--font-display); font-size:clamp(64px,10vw,112px); font-weight:800; line-height:0.9; letter-spacing:-0.03em; color:var(--black); }
+.testi-meta { }
+.testi-desc { font-size:15px; color:rgba(0,0,0,0.6); line-height:1.75; margin-bottom:28px; }
+.testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.testi-card { background:var(--black); border-radius:var(--r-xl); padding:28px; transition:transform 0.3s; }
+.testi-card:hover { transform:translateY(-6px); }
+.testi-stars { color:var(--yellow); font-size:14px; margin-bottom:14px; letter-spacing:2px; }
+.testi-quote { font-size:14px; color:var(--text-muted); line-height:1.75; margin-bottom:22px; font-style:italic; }
+.testi-author { display:flex; align-items:center; gap:12px; }
+.testi-avatar { width:40px; height:40px; border-radius:50%; background:var(--surface-2); display:flex; align-items:center; justify-content:center; color:var(--yellow); font-weight:800; font-size:14px; flex-shrink:0; border:1px solid var(--border-gold); }
+.testi-name { font-size:14px; font-weight:700; color:var(--white); }
+.testi-role { font-size:12px; color:var(--text-muted); }
+
+/* ─── CONTACT ─── */
+#contact { padding:96px var(--pad-desktop); background:var(--black); }
+.contact-inner { display:grid; grid-template-columns:1fr 1fr; gap:80px; }
+.contact-title { font-family:var(--font-display); font-size:clamp(36px,5vw,58px); font-weight:800; letter-spacing:-0.02em; color:var(--white); margin-bottom:12px; line-height:1.1; }
+.contact-title em { color:var(--yellow); font-style:normal; }
+.contact-sub { font-size:15px; color:var(--text-muted); line-height:1.75; margin-bottom:44px; }
+.contact-info { display:flex; flex-direction:column; gap:22px; }
+.contact-item { display:flex; gap:16px; align-items:flex-start; }
+.contact-icon { width:46px; height:46px; flex-shrink:0; background:var(--yellow-glow); border:1px solid var(--border-gold); border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.contact-label { font-size:10px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-faint); margin-bottom:3px; }
+.contact-val { font-size:15px; color:var(--text); font-weight:500; }
+.contact-form-panel { background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-2xl); padding:40px; }
+.form-label { font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; display:block; }
+.form-input {
+  background:rgba(255,255,255,0.04); border:1px solid var(--border);
+  color:var(--white); padding:14px 16px; border-radius:var(--r-md);
+  font-family:var(--font-body); font-size:14px; width:100%;
+  outline:none; transition:border-color 0.2s, box-shadow 0.2s; resize:none;
+}
+.form-input:focus { border-color:var(--yellow); box-shadow:0 0 0 3px rgba(255,208,0,0.08); }
+.form-input::placeholder { color:var(--text-faint); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+.form-field { margin-bottom:14px; }
+
+/* ─── FOOTER ─── */
+footer { background:var(--surface); border-top:1px solid var(--border); padding:72px var(--pad-desktop) 36px; }
+.footer-grid { display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:56px; margin-bottom:56px; }
+.footer-logo { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.footer-logo-mark { width:36px; height:36px; background:var(--yellow); border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-size:15px; font-weight:800; color:var(--black); }
+.footer-brand { font-family:var(--font-display); font-size:19px; font-weight:800; color:var(--white); }
+.footer-about { font-size:13.5px; color:var(--text-muted); line-height:1.75; max-width:280px; margin-bottom:22px; }
+.footer-socials { display:flex; gap:10px; }
+.footer-social { width:38px; height:38px; border:1px solid var(--border); border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer; transition:all 0.2s; }
+.footer-social:hover { border-color:var(--yellow); background:var(--yellow-glow); }
+.footer-col h4 { font-size:11px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:var(--white); margin-bottom:22px; }
+.footer-links { display:flex; flex-direction:column; gap:12px; }
+.footer-links a { font-size:13.5px; color:var(--text-muted); transition:color 0.2s, transform 0.2s; display:inline-block; }
+.footer-links a:hover { color:var(--yellow); transform:translateX(4px); }
+.footer-contact-item { font-size:13px; color:var(--text-muted); margin-bottom:10px; display:flex; gap:8px; align-items:flex-start; }
+.footer-divider { border:none; border-top:1px solid var(--border); margin-bottom:28px; }
+.footer-bottom { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; }
+.footer-copy { font-size:12px; color:var(--text-faint); }
+.footer-apps { display:flex; gap:10px; }
+.app-badge { background:var(--surface-2); border:1px solid var(--border); padding:8px 16px; border-radius:var(--r-md); font-size:12px; color:var(--text-muted); display:flex; align-items:center; gap:8px; cursor:pointer; transition:all 0.2s; }
+.app-badge:hover { border-color:var(--yellow); }
+
+/* ─── BOOKING MODAL ─── */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:9999; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(4px); }
+.modal-overlay.active { display:flex; }
+.modal {
+  background:var(--surface-2); border:1px solid var(--border); border-radius:var(--r-2xl);
+  padding:44px; max-width:640px; width:100%; max-height:90vh; overflow-y:auto;
+  position:relative; box-shadow:0 40px 100px rgba(0,0,0,0.7);
+  animation: modal-in 0.35s cubic-bezier(0.22,1,0.36,1) both;
+}
+@keyframes modal-in { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
+.modal-close { position:absolute; top:18px; right:22px; background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--text-muted); width:34px; height:34px; border-radius:var(--r-md); display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:20px; transition:all 0.2s; }
+.modal-close:hover { border-color:rgba(239,68,68,0.4); color:#fca5a5; }
+.modal-step-dots { display:flex; gap:8px; margin-bottom:32px; }
+.modal-dot { width:8px; height:8px; border-radius:4px; background:var(--border); transition:all 0.3s; }
+.modal-dot.active { width:24px; background:var(--yellow); }
+.modal-input { background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--white); padding:14px 18px; border-radius:var(--r-md); font-size:14px; font-family:var(--font-body); width:100%; outline:none; transition:border-color 0.2s; }
+.modal-input:focus { border-color:var(--yellow); }
+.modal-input::placeholder { color:var(--text-faint); }
+.modal-label { font-size:11px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; display:block; }
+.modal-field { margin-bottom:14px; }
+.modal-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.vehicle-opts { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px; }
+.vehicle-opt { border:2px solid var(--border); border-radius:var(--r-lg); padding:22px; cursor:pointer; text-align:center; transition:all 0.25s; background:var(--surface-3); }
+.vehicle-opt.selected { border-color:var(--yellow); background:rgba(255,208,0,0.06); }
+.vehicle-opt:hover { border-color:var(--border-gold); }
+.vehicle-opt-icon { font-size:36px; margin-bottom:10px; }
+.vehicle-opt-title { font-size:14px; font-weight:700; color:var(--white); }
+.vehicle-opt-desc { font-size:12px; color:var(--text-muted); margin-top:4px; }
+.modal-nav-btns { display:flex; justify-content:space-between; margin-top:28px; }
+.btn-back { background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:12px 24px; border-radius:var(--r-md); font-size:14px; font-weight:600; cursor:pointer; font-family:var(--font-body); transition:all 0.2s; }
+.btn-back:hover { border-color:var(--text-muted); color:var(--text); }
+
+/* ─── SCROLL REVEAL ─── */
+@keyframes fade-up { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+.reveal { opacity:0; transform:translateY(24px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+.reveal.visible { opacity:1; transform:translateY(0); }
+.reveal-left { opacity:0; transform:translateX(-28px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+.reveal-left.visible { opacity:1; transform:translateX(0); }
+.reveal-right { opacity:0; transform:translateX(28px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1), transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+.reveal-right.visible { opacity:1; transform:translateX(0); }
+.stagger > * { opacity:0; transform:translateY(20px); transition:opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1); }
+.stagger.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:.1s}
+.stagger.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:.2s}
+.stagger.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:.3s}
+.stagger.visible > *:nth-child(5){opacity:1;transform:none;transition-delay:.4s}
+.stagger.visible > *:nth-child(6){opacity:1;transform:none;transition-delay:.5s}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1100px){
+  nav{padding:0 40px}
+  #hero,#how,#services,#drivers,#calculator,#why,#fleet,#testimonials,#contact,footer{padding-left:40px;padding-right:40px}
+  .bento-grid{grid-template-rows:auto;height:auto}
+  .bento-1,.bento-2,.bento-3,.bento-4{grid-column:span 12;min-height:260px}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:40px}
+}
+@media(max-width:768px){
+  nav{padding:0 var(--pad-mobile)}
+  .nav-links{display:none}
+  #hero{padding:72px var(--pad-mobile) 0;flex-direction:column}
+  .hero-car-placeholder{position:relative;right:auto;bottom:auto;width:100%;margin-top:32px}
+  .hero-content{padding:60px 0 0}
+  #how,#services,#drivers,#calculator,#why,#fleet,#testimonials,#contact{padding:64px var(--pad-mobile)}
+  .gallery-strip{padding:0 var(--pad-mobile) 48px}
+  #luxury{grid-template-columns:1fr;min-height:auto}
+  .luxury-left{padding:60px var(--pad-mobile)}
+  .luxury-ph{min-height:280px}
+  .steps-grid,.drivers-inner,.calc-inner,.why-grid,.contact-inner,.testi-head,.testi-grid{grid-template-columns:1fr;gap:32px}
+  footer{padding-left:var(--pad-mobile);padding-right:var(--pad-mobile)}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
+  .modal-row,.form-row,.calc-row{grid-template-columns:1fr}
+  .hero-stats{gap:24px}
+  .services-intro{flex-direction:column;gap:20px;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<div id="scroll-bar"></div>
+
+<!-- ═══════════════════════ NAV ═══════════════════════ -->
+<nav id="main-nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">JX</div>
+    <span class="nav-brand">Jux<span>Drive</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="#how"        class="nav-link active">Home</a>
+    <a href="#drivers"    class="nav-link">About</a>
+    <a href="services.html" class="nav-link">Services</a>
+    <a href="drivers.html"  class="nav-link">Drivers</a>
+    <a href="fleet.html"    class="nav-link">Fleet</a>
+    <a href="contact.html"  class="nav-link">Contact</a>
+  </div>
+  <div class="nav-cta-wrap">
+    <button class="btn-primary" onclick="openBooking()" style="padding:10px 24px;font-size:13px;">Book a Driver</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section id="hero">
+  <div class="hero-slash"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <div class="hero-eyebrow-text">Premium Chauffeur · Ghana</div>
+    </div>
+    <h1 class="t-display hero-title">
+      Chauffeur<br>at Your<br><em class="col-yellow">Service</em>
+    </h1>
+    <p class="t-body hero-sub">For errands, weddings, business trips and more. Don't force yourself to drive — relax while we chauffeur you in comfort and style.</p>
+    <p class="hero-tagline">Your next journey, handled with elegance.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openBooking()">Book a Driver</button>
+      <a href="#services" class="btn-ghost">Explore Services</a>
+    </div>
+    <div class="hero-stats stagger">
+      <div>
+        <div class="hero-stat-num" id="stat-rides">0+</div>
+        <div class="hero-stat-label">Rides Completed</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" id="stat-drivers">0+</div>
+        <div class="hero-stat-label">Pro Drivers</div>
+      </div>
+      <div>
+        <div class="hero-stat-num" id="stat-rating">0★</div>
+        <div class="hero-stat-label">Client Rating</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CAR PLACEHOLDER — Replace with your car PNG -->
+  <div class="hero-car-placeholder">
+    <div class="car-ph">
+      <div class="car-ph-badge">Fleet Photo</div>
+      <div class="car-ph-icon">🚗</div>
+      <div class="car-ph-label">JuxDrive Premium Vehicle</div>
+      <div class="car-ph-sub">Replace with car PNG file</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <div class="scroll-hint-text">Scroll</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ GALLERY ═══════════════════════ -->
+<div id="gallery">
+  <div class="gallery-label">
+    <span class="section-label">Memories</span>
+    <h2 class="t-headline" style="margin-top:8px">We create <em class="col-yellow">memories</em> with you</h2>
+  </div>
+  <div class="gallery-strip">
+    <div class="gallery-item tall"><img src="https://images.unsplash.com/photo-1485291571150-772bcfc10da5?w=300&q=80" alt="Ride"></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80" alt="Driver"></div>
+    <div class="gallery-item tall"><img src="https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300&q=80" alt="Wedding"></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&q=80" alt="Road"></div>
+    <div class="gallery-item tall"><img src="https://images.unsplash.com/photo-1504215680853-026ed2a45def?w=300&q=80" alt="Beach"></div>
+    <div class="gallery-item"><img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=300&q=80" alt="City"></div>
+    <div class="gallery-item tall"><img src="https://images.unsplash.com/photo-1502877338535-766e1452684a?w=300&q=80" alt="Luxury"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ HOW IT WORKS ═══════════════════════ -->
+<section id="how">
+  <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto;">
+    <span class="section-label">Simple Process</span>
+    <h2 class="t-headline" style="margin-top:8px">How It Works</h2>
+    <p class="t-body col-muted" style="margin-top:14px">From booking to drop-off — the entire experience is designed to be effortless.</p>
+  </div>
+  <div class="steps-grid stagger" style="margin-top:60px">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-icon">🎯</div>
+      <h3 class="step-title">Choose a Service</h3>
+      <p class="step-desc">Select from weddings, business trips, airport pickups, overnight trips or personal errands. Every ride is tailored.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-icon">🚗</div>
+      <h3 class="step-title">Book a Driver</h3>
+      <p class="step-desc">Schedule your chauffeur to drive your car or choose from our premium fleet. Instant booking confirmation.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-icon">✨</div>
+      <h3 class="step-title">Enjoy the Ride</h3>
+      <p class="step-desc">Sit back and relax. Receive live SMS and email updates on your driver's location throughout the journey.</p>
+    </div>
+  </div>
+  <div class="reveal" style="text-align:center;margin-top:48px">
+    <button class="btn-primary" onclick="openBooking()">Book a Driver Now</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════ DISCOVER LUXURY ═══════════════════════ -->
+<div id="luxury">
+  <div class="luxury-left reveal-left">
+    <div class="luxury-tag">Premium Experience</div>
+    <h2 class="luxury-title">DISCOVER<br><em>LUXURY</em></h2>
+    <button class="btn-primary" onclick="openBooking()">Book a Driver</button>
+  </div>
+  <div class="luxury-right">
+    <!-- CAR PLACEHOLDER — Replace with luxury fleet PNG -->
+    <div class="luxury-ph">
+      <div class="luxury-ph-car">🏎️</div>
+      <div class="luxury-ph-text">Luxury Fleet Photo</div>
+      <div class="luxury-ph-note">Replace with premium car image</div>
+      <div class="luxury-ph-badge">Coming Soon</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SERVICES — BENTO (from Stitch) ═══════════════════════ -->
+<section id="services">
+  <div class="services-intro">
+    <div class="services-intro-text reveal-left">
+      <span class="section-label">What We Offer</span>
+      <h2 class="t-headline" style="margin-top:10px">Bespoke Service<br>for Every Journey</h2>
+    </div>
+    <div class="reveal-right" style="max-width:320px">
+      <p class="t-body col-muted">Our drivers are well trained to give you the best. On the day of your ride you receive live SMS and email updates.</p>
+    </div>
+  </div>
+
+  <!-- BENTO GRID -->
+  <div class="bento-grid reveal">
+    <!-- Wedding — wide -->
+    <div class="bento-card bento-1" onclick="openBooking()">
+      <div class="bento-ph"><div class="bento-ph-icon">💍</div></div>
+      <div class="bento-bg" style="background-image:url('https://images.unsplash.com/photo-1606800052052-a08af7148866?w=900&q=80')"></div>
+      <div class="bento-glass"></div>
+      <div class="bento-content">
+        <span class="bento-icon">💍</span>
+        <h3 class="bento-title">Wedding Rides</h3>
+        <p class="bento-desc">Make your most special day seamless. Professional chauffeurs, on time, impeccably presented.</p>
+        <span class="bento-arrow">Book Now →</span>
+      </div>
+    </div>
+    <!-- Business — tall -->
+    <div class="bento-card bento-2 bento-tall" onclick="openBooking()">
+      <div class="bento-ph"><div class="bento-ph-icon">💼</div></div>
+      <div class="bento-bg" style="background-image:url('https://images.unsplash.com/photo-1560264280-88b68371db39?w=700&q=80')"></div>
+      <div class="bento-glass"></div>
+      <div class="bento-content">
+        <span class="bento-icon">💼</span>
+        <h3 class="bento-title">Business Trips</h3>
+        <p class="bento-desc">Arrive at every meeting composed. We handle the driving so you can focus on leading.</p>
+        <span class="bento-arrow">Book Now →</span>
+      </div>
+    </div>
+    <!-- Overnight -->
+    <div class="bento-card bento-3" onclick="openBooking()">
+      <div class="bento-ph"><div class="bento-ph-icon">🌙</div></div>
+      <div class="bento-bg" style="background-image:url('https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=700&q=80')"></div>
+      <div class="bento-glass"></div>
+      <div class="bento-content">
+        <span class="bento-icon">🌙</span>
+        <h3 class="bento-title">Overnight Trips</h3>
+        <p class="bento-desc">Long-distance travel covered — any destination across Ghana.</p>
+        <span class="bento-arrow">Book Now →</span>
+      </div>
+    </div>
+    <!-- Airport -->
+    <div class="bento-card bento-4" onclick="openBooking()">
+      <div class="bento-ph"><div class="bento-ph-icon">✈️</div></div>
+      <div class="bento-bg" style="background-image:url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=700&q=80')"></div>
+      <div class="bento-glass"></div>
+      <div class="bento-content">
+        <span class="bento-icon">✈️</span>
+        <h3 class="bento-title">Airport Pickups</h3>
+        <p class="bento-desc">Flight tracking, meet-and-greet, luggage assist. Never wait at arrivals again.</p>
+        <span class="bento-arrow">Book Now →</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="services-cta reveal">
+    <button class="btn-primary" onclick="openBooking()">Book a Driver</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════ DRIVERS ═══════════════════════ -->
+<section id="drivers">
+  <div class="drivers-inner">
+    <div>
+      <span class="section-label reveal">Meet the Team</span>
+      <h2 class="t-headline reveal" style="margin-top:10px;margin-bottom:36px">Your Safety is Our<br>Top <em class="col-yellow">Priority</em></h2>
+      <div class="driver-card-wrap">
+        <div class="driver-card reveal">
+          <div class="driver-name">Christian Ansah</div>
+          <div class="driver-role">Senior Chauffeur · 3 Years Experience</div>
+          <p class="driver-bio">Known as the perfectionist — meticulous, always on time, committed to a flawless experience on every journey.</p>
+          <span class="driver-badge">Licence D · Professional</span>
+        </div>
+        <div class="driver-card reveal">
+          <div class="driver-name">Kofi Kwame</div>
+          <div class="driver-role">Senior Chauffeur · 5 Years Experience</div>
+          <p class="driver-bio">Highly experienced and calm under pressure. Kofi's road knowledge ensures punctual, safe arrivals every time.</p>
+          <span class="driver-badge">Certified · 5★ Rated</span>
+        </div>
+      </div>
+    </div>
+    <!-- DRIVER IMAGE PLACEHOLDER — Replace with team/driver PNG -->
+    <div class="reveal-right">
+      <div class="drivers-image">
+        <div class="driver-img-ph">
+          <div class="driver-img-ph-icon">🧑‍✈️</div>
+          <div class="driver-img-ph-text">Driver Photo</div>
+        </div>
+        <div class="drivers-image-badge">
+          <div class="badge-icon-wrap">🛡️</div>
+          <div>
+            <div class="badge-title">100% Vetted & Insured</div>
+            <div class="badge-sub">Every driver fully screened and covered</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ COST CALCULATOR ═══════════════════════ -->
+<section id="calculator">
+  <div class="calc-inner">
+    <div class="reveal-left">
+      <span class="section-label">Fare Estimator</span>
+      <h2 class="t-headline" style="margin-top:10px;color:var(--white)">Calculate the<br>Cost of Your Ride</h2>
+      <p class="t-body col-muted" style="margin-top:16px;margin-bottom:0">Get an instant estimate before you book. Final price confirmed at booking.</p>
+      <div class="calc-form">
+        <div class="calc-row">
+          <input class="calc-input" type="text" placeholder="Pickup Location" id="calc-from">
+          <input class="calc-input" type="text" placeholder="Drop-off Location" id="calc-to">
+        </div>
+        <div class="calc-row">
+          <select class="calc-input" id="calc-service">
+            <option value="">Service Type</option>
+            <option value="wedding">Wedding</option>
+            <option value="business">Business Trip</option>
+            <option value="overnight">Overnight Trip</option>
+            <option value="airport">Airport Pickup</option>
+            <option value="errand">Personal / Errand</option>
+          </select>
+          <select class="calc-input" id="calc-vehicle">
+            <option value="">Vehicle Class</option>
+            <option value="standard">Standard</option>
+            <option value="premium">Premium SUV</option>
+            <option value="luxury">Luxury</option>
+          </select>
+        </div>
+        <div class="calc-row">
+          <input class="calc-input" type="number" placeholder="Distance (km)" id="calc-dist">
+          <input class="calc-input" type="number" placeholder="Duration (hours)" id="calc-hrs">
+        </div>
+        <button class="btn-primary" onclick="calcFare()" style="width:100%">Calculate Estimate →</button>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div class="calc-result">
+        <div class="calc-result-label">Estimated Fare</div>
+        <div class="calc-result-price" id="calc-price">GH₵ —</div>
+        <div class="calc-result-note" id="calc-note">Fill the form to get your estimate</div>
+        <button class="btn-primary" onclick="openBooking()" style="background:var(--black);color:var(--yellow);width:100%">Book This Ride</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ WHY CHOOSE US ═══════════════════════ -->
+<section id="why">
+  <div class="reveal" style="text-align:center;max-width:520px;margin:0 auto">
+    <span class="section-label">Our Promise</span>
+    <h2 class="t-headline" style="margin-top:10px">Why <em class="col-yellow">Choose</em> Us</h2>
+    <p class="t-body col-muted" style="margin-top:14px">Three pillars that define every JuxDrive experience.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-features stagger">
+      <div class="why-item">
+        <div class="why-icon">🧑‍✈️</div>
+        <div>
+          <div class="why-title">Professional Drivers</div>
+          <p class="why-desc">Every JuxDrive chauffeur undergoes rigorous vetting, background checks, and professional training.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">🛡️</div>
+        <div>
+          <div class="why-title">Safety First</div>
+          <p class="why-desc">Real-time GPS tracking, live SMS/email updates, and fully insured vehicles — safety is built into every step.</p>
+        </div>
+      </div>
+      <div class="why-item">
+        <div class="why-icon">⏱️</div>
+        <div>
+          <div class="why-title">Punctuality & Veracity</div>
+          <p class="why-desc">On time, every time. Transparent communication, honest service — no hidden fees, no surprises.</p>
+        </div>
+      </div>
+    </div>
+    <!-- WHY VISUAL PLACEHOLDER — Replace with fleet/car PNG -->
+    <div class="reveal-right">
+      <div class="why-ph">
+        <div class="why-ph-icon">🚙</div>
+        <div class="why-ph-text">Fleet Photo Coming Soon</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FLEET ═══════════════════════ -->
+<section id="fleet">
+  <div class="reveal" style="text-align:center">
+    <span class="section-label">Our Vehicles</span>
+    <h2 class="t-headline" style="margin-top:10px">Our Fleet</h2>
+    <p class="t-body col-muted" style="margin-top:14px;max-width:480px;margin-left:auto;margin-right:auto">We operate and partner with premium vehicle brands to match every occasion.</p>
+  </div>
+  <div class="fleet-brands reveal stagger">
+    <div class="brand-item"><div class="brand-icon">🚗</div><div class="brand-name">Nissan</div></div>
+    <div class="brand-item"><div class="brand-icon">⭐</div><div class="brand-name">Mercedes</div></div>
+    <div class="brand-item"><div class="brand-icon">🚙</div><div class="brand-name">Toyota</div></div>
+    <div class="brand-item"><div class="brand-icon">🔵</div><div class="brand-name">Mazda</div></div>
+    <div class="brand-item"><div class="brand-icon">🔷</div><div class="brand-name">Hyundai</div></div>
+    <div class="brand-item"><div class="brand-icon">💎</div><div class="brand-name">Cadillac</div></div>
+    <div class="brand-item"><div class="brand-icon">🏆</div><div class="brand-name">Audi</div></div>
+  </div>
+  <div class="affiliates-title reveal">Our Affiliates</div>
+  <div class="affiliates-strip reveal stagger">
+    <div class="affiliate-pill">3C Car Rent</div>
+    <div class="affiliate-pill">RentGo Ghana</div>
+    <div class="affiliate-pill">Hyundai GH</div>
+    <div class="affiliate-pill">Cadillac West Africa</div>
+    <div class="affiliate-pill">Audi Accra</div>
+  </div>
+  <div class="reveal" style="text-align:center;margin-top:52px">
+    <a href="fleet.html" class="btn-primary">View Full Fleet</a>
+  </div>
+</section>
+
+<!-- ═══════════════════════ TESTIMONIALS ═══════════════════════ -->
+<section id="testimonials">
+  <div class="testi-head">
+    <div class="testi-big-title reveal-left">TESTI-<br>MONY</div>
+    <div class="testi-meta reveal-right">
+      <p class="testi-desc">What our clients say about their JuxDrive experience. Every review reflects our commitment to comfort, safety, and professionalism.</p>
+      <button class="btn-primary" style="background:var(--black);color:var(--yellow)">More Testimonials</button>
+    </div>
+  </div>
+  <div class="testi-grid stagger reveal">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Used JuxDrive for my wedding day — the driver was early, dressed immaculately, and everything was flawless. Couldn't have asked for more."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">AA</div>
+        <div><div class="testi-name">Abena Asante</div><div class="testi-role">Wedding Client · Accra</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"JuxDrive has become my go-to for airport transfers. They track my flight and are always there, even when I land early. Absolutely reliable."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">KO</div>
+        <div><div class="testi-name">Kwame Owusu</div><div class="testi-role">Frequent Traveler · Tema</div></div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"I had an important board meeting and couldn't afford any stress. My JuxDrive chauffeur got me there on time, calm, and composed. 10/10."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">YM</div>
+        <div><div class="testi-name">Yaa Mensah</div><div class="testi-role">Business Executive · East Legon</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CONTACT ═══════════════════════ -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal-left">
+      <span class="section-label">Get in Touch</span>
+      <h2 class="contact-title" style="margin-top:12px">Have a<br>Question?<br><em>Let's Talk.</em></h2>
+      <p class="contact-sub">Our team is ready to help with bookings, pricing and anything else. We respond within 2 hours.</p>
+      <div class="contact-info">
+        <div class="contact-item">
+          <div class="contact-icon">📞</div>
+          <div><div class="contact-label">Phone</div><div class="contact-val">+(233) 57 400 2145</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">✉️</div>
+          <div><div class="contact-label">Email</div><div class="contact-val">info@juxdrive.org</div></div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div><div class="contact-label">Address</div><div class="contact-val">13 Amli Street, Adenta<br>East Legon, Accra, Ghana</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal-right">
+      <div class="contact-form-panel">
+        <h3 style="font-family:var(--font-display);font-size:22px;color:var(--white);margin-bottom:6px">Send a Message</h3>
+        <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px">We'll respond within 2 business hours.</p>
+        <div class="form-row">
+          <div class="form-field"><label class="form-label">Name</label><input class="form-input" type="text" placeholder="Your name"></div>
+          <div class="form-field"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com"></div>
+        </div>
+        <div class="form-field"><label class="form-label">Subject</label><input class="form-input" type="text" placeholder="How can we help?"></div>
+        <div class="form-field"><label class="form-label">Message</label><textarea class="form-input" style="min-height:120px;resize:vertical" placeholder="Your message..."></textarea></div>
+        <button class="btn-primary" style="width:100%;margin-top:4px">Send Message →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ FOOTER ═══════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo">
+        <div class="footer-logo-mark">JX</div>
+        <span class="footer-brand">JuxDrive</span>
+      </div>
+      <p class="footer-about">Premium chauffeur services across Ghana. Professional, safe, and reliable transportation for all occasions — weddings, business, travel, and beyond.</p>
+      <div class="footer-socials">
+        <div class="footer-social">📘</div>
+        <div class="footer-social">📸</div>
+        <div class="footer-social">🐦</div>
+        <div class="footer-social">▶️</div>
+        <div class="footer-social">💬</div>
+      </div>
+    </div>
+    <div>
+      <h4>Services</h4>
+      <div class="footer-links">
+        <a href="services.html">Wedding Rides</a>
+        <a href="services.html">Business Trips</a>
+        <a href="services.html">Overnight Trips</a>
+        <a href="services.html">Airport Pickups</a>
+      </div>
+    </div>
+    <div>
+      <h4>Company</h4>
+      <div class="footer-links">
+        <a href="#drivers">About Us</a>
+        <a href="drivers.html">Our Drivers</a>
+        <a href="fleet.html">Our Fleet</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <h4>Contact</h4>
+      <div class="footer-contact-item">📞 +(233) 57 400 2145</div>
+      <div class="footer-contact-item">✉️ info@juxdrive.org</div>
+      <div class="footer-contact-item">📍 East Legon, Accra, Ghana</div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 JuxDrive Chauffeuring. All rights reserved.</span>
+    <div class="footer-apps">
+      <div class="app-badge"><span>🍎</span> App Store</div>
+      <div class="app-badge"><span>🤖</span> Google Play</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════ BOOKING MODAL ═══════════════════════ -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()">×</button>
+    <h2 style="font-family:var(--font-display);font-size:26px;color:var(--white);margin-bottom:4px">Book a Driver</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin-bottom:28px">JuxDrive Chauffeuring — Accra, Ghana</p>
+    <div class="modal-step-dots">
+      <div class="modal-dot active" id="dot-1"></div>
+      <div class="modal-dot" id="dot-2"></div>
+      <div class="modal-dot" id="dot-3"></div>
+    </div>
+    <div id="step-1">
+      <div class="t-label" style="color:var(--yellow);margin-bottom:20px">Personal Details</div>
+      <div class="modal-row modal-field">
+        <div class="modal-field"><label class="modal-label">Full Name</label><input class="modal-input" type="text" id="b-name" placeholder="Your full name"></div>
+        <div class="modal-field"><label class="modal-label">Phone</label><input class="modal-input" type="tel" id="b-phone" placeholder="+233 XX XXX XXXX"></div>
+      </div>
+      <div class="modal-row">
+        <div class="modal-field"><label class="modal-label">Email</label><input class="modal-input" type="email" id="b-email" placeholder="you@email.com"></div>
+        <div class="modal-field"><label class="modal-label">Emergency Number</label><input class="modal-input" type="tel" id="b-emergency" placeholder="+233 XX XXX XXXX"></div>
+      </div>
+    </div>
+    <div id="step-2" style="display:none">
+      <div class="t-label" style="color:var(--yellow);margin-bottom:20px">Ride Details</div>
+      <div class="modal-row modal-field">
+        <div class="modal-field"><label class="modal-label">Pickup Date</label><input class="modal-input" type="date" id="b-date"></div>
+        <div class="modal-field"><label class="modal-label">Pickup Time</label><input class="modal-input" type="time" id="b-time"></div>
+      </div>
+      <div class="modal-field"><label class="modal-label">Pickup Location</label><input class="modal-input" type="text" id="b-from" placeholder="Enter pickup address"></div>
+      <div class="modal-field"><label class="modal-label">Drop-off Location</label><input class="modal-input" type="text" id="b-to" placeholder="Enter destination"></div>
+      <div class="modal-field"><label class="modal-label">Purpose of Booking</label>
+        <select class="modal-input" id="b-purpose">
+          <option value="">Select a service</option>
+          <option>Wedding</option><option>Business Trip</option>
+          <option>Overnight Trip</option><option>Airport Pickup</option><option>Personal / Errand</option>
+        </select>
+      </div>
+    </div>
+    <div id="step-3" style="display:none">
+      <div class="t-label" style="color:var(--yellow);margin-bottom:20px">Choose Vehicle Option</div>
+      <div class="vehicle-opts">
+        <div class="vehicle-opt selected" id="opt-personal" onclick="selectVehicle('personal')">
+          <div class="vehicle-opt-icon">🚘</div>
+          <div class="vehicle-opt-title">Use Personal Car</div>
+          <div class="vehicle-opt-desc">We chauffeur you in your own vehicle</div>
+        </div>
+        <div class="vehicle-opt" id="opt-rent" onclick="selectVehicle('rent')">
+          <div class="vehicle-opt-icon">🏎️</div>
+          <div class="vehicle-opt-title">Rent a Vehicle</div>
+          <div class="vehicle-opt-desc">Choose from our premium fleet</div>
+        </div>
+      </div>
+      <div id="personal-car-form">
+        <div class="t-label" style="margin-bottom:16px;margin-top:8px">Your Vehicle Details</div>
+        <div class="modal-row modal-field">
+          <div class="modal-field"><label class="modal-label">Car Model</label><input class="modal-input" type="text" placeholder="e.g. Toyota Camry"></div>
+          <div class="modal-field"><label class="modal-label">Year</label><input class="modal-input" type="text" placeholder="e.g. 2020"></div>
+        </div>
+        <div class="modal-row">
+          <div class="modal-field"><label class="modal-label">Transmission</label><select class="modal-input"><option>Automatic</option><option>Manual</option></select></div>
+          <div class="modal-field"><label class="modal-label">Drivetrain</label><select class="modal-input"><option>FWD</option><option>RWD</option><option>4WD/AWD</option></select></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-nav-btns">
+      <button class="btn-back" id="modal-back" style="display:none" onclick="modalBack()">← Back</button>
+      <button class="btn-primary" id="modal-next" onclick="modalNext()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient(
+  'https://eyuoejjewuzxouirymze.supabase.co',
+  'sb_publishable_TtgDPqo5tnX-bpiu3AclgQ_Jzg6M-y_'
+);
+
+// ─── SCROLL SYSTEMS ───
+const revealObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); }});
+}, { threshold:0.08, rootMargin:'0px 0px -40px 0px' });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.stagger').forEach(el => revealObs.observe(el));
+
+// Gallery stagger
+const galleryObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      document.querySelectorAll('.gallery-item').forEach((item,i) => setTimeout(() => item.classList.add('visible'), i*80));
+      galleryObs.disconnect();
+    }
+  });
+}, { threshold:0.1 });
+const galleryEl = document.querySelector('.gallery-strip');
+if (galleryEl) galleryObs.observe(galleryEl);
+
+// Progress bar
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  document.getElementById('scroll-bar').style.width = (doc.scrollTop/(doc.scrollHeight-doc.clientHeight)*100)+'%';
+}, { passive:true });
+
+// Nav glass solidify
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 60) { nav.style.background='rgba(14,14,14,0.97)'; nav.style.borderBottomColor='rgba(255,208,0,0.2)'; }
+  else { nav.style.background='rgba(14,14,14,0.85)'; nav.style.borderBottomColor='rgba(255,255,255,0.08)'; }
+}, { passive:true });
+
+// Stats counters
+const statsObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    const counters = [{el:'stat-rides',target:500,suffix:'+'},{el:'stat-drivers',target:50,suffix:'+'},{el:'stat-rating',target:4.9,suffix:'★'}];
+    counters.forEach(({el,target,suffix}) => {
+      const node = document.getElementById(el);
+      const isDecimal = target%1!==0;
+      let start=null;
+      const step = ts => {
+        if (!start) start=ts;
+        const p = Math.min((ts-start)/1800,1);
+        const ease = 1-Math.pow(1-p,3);
+        node.textContent = (isDecimal?(ease*target).toFixed(1):Math.floor(ease*target))+suffix;
+        if (p<1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+    statsObs.disconnect();
+  });
+}, { threshold:0.6 });
+const statsEl = document.querySelector('.hero-stats');
+if (statsEl) statsObs.observe(statsEl);
+
+// Gallery item CSS
+document.querySelectorAll('.gallery-item').forEach(el => {
+  el.style.opacity='0'; el.style.transform='translateY(20px)'; el.style.transition='opacity 0.6s cubic-bezier(0.22,1,0.36,1),transform 0.6s cubic-bezier(0.22,1,0.36,1)';
+});
+document.querySelectorAll('.gallery-item.visible').forEach(el => { el.style.opacity='1'; el.style.transform='none'; });
+
+// ─── BOOKING MODAL ───
+let step = 1;
+window.openBooking = () => { document.getElementById('booking-modal').classList.add('active'); document.body.style.overflow='hidden'; };
+window.closeBooking = () => { document.getElementById('booking-modal').classList.remove('active'); document.body.style.overflow=''; step=1; showStep(1); };
+function showStep(n) {
+  [1,2,3].forEach(i => { document.getElementById('step-'+i).style.display=i===n?'block':'none'; document.getElementById('dot-'+i).classList.toggle('active',i===n); });
+  document.getElementById('modal-back').style.display=n>1?'inline-block':'none';
+  document.getElementById('modal-next').textContent=n===3?'Confirm Booking ✓':'Continue →';
+}
+window.modalNext = () => { if (step<3){step++;showStep(step);}else{confirmBooking();} };
+window.modalBack = () => { if (step>1){step--;showStep(step);} };
+window.selectVehicle = type => {
+  document.getElementById('opt-personal').classList.toggle('selected',type==='personal');
+  document.getElementById('opt-rent').classList.toggle('selected',type==='rent');
+  document.getElementById('personal-car-form').style.display=type==='personal'?'block':'none';
+};
+
+async function confirmBooking() {
+  const name=document.getElementById('b-name').value.trim();
+  const phone=document.getElementById('b-phone').value.trim();
+  const email=document.getElementById('b-email').value.trim();
+  const emerg=document.getElementById('b-emergency').value.trim();
+  const date=document.getElementById('b-date').value;
+  const time=document.getElementById('b-time').value;
+  const from=document.getElementById('b-from').value.trim();
+  const to=document.getElementById('b-to').value.trim();
+  const purpose=document.getElementById('b-purpose').value;
+  if (!name||!phone||!date||!from||!to||!purpose){alert('Please fill in all required fields.');return;}
+  const btn=document.getElementById('modal-next');
+  btn.textContent='Saving…';btn.disabled=true;
+  try {
+    const {error}=await supabase.from('bookings').insert([{full_name:name,phone,email,emergency_number:emerg,pickup_date:date,pickup_time:time||null,pickup_location:from,dropoff_location:to,purpose,vehicle_option:document.getElementById('opt-personal').classList.contains('selected')?'personal_car':'rent_vehicle',status:'pending'}]);
+    if (error) throw error;
+    document.getElementById('booking-modal').innerHTML=`<div style="text-align:center;padding:56px 24px"><div style="font-size:64px;margin-bottom:20px">✅</div><h2 style="font-family:'Syne',sans-serif;font-size:28px;color:var(--white);margin-bottom:10px">Booking Received!</h2><p style="font-size:14px;color:var(--text-muted);margin-bottom:8px">Thank you, <strong style="color:var(--white)">${name}</strong>.</p><p style="font-size:13px;color:var(--text-muted);margin-bottom:36px;line-height:1.7">A JuxDrive team member will call you within 30 minutes to confirm your driver and trip details.</p><button onclick="closeBooking()" style="background:var(--yellow);color:var(--black);padding:13px 32px;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-right:12px">Done</button><a href="tel:+233574002145" style="color:var(--text-muted);border:1px solid var(--border);padding:12px 24px;border-radius:8px;font-size:14px;display:inline-block">📞 Call Now</a></div>`;
+  } catch(err) {
+    btn.textContent='Try Again';btn.disabled=false;
+    alert('Could not save booking. Please call +(233) 57 400 2145.'); console.error(err);
+  }
+}
+document.getElementById('booking-modal').addEventListener('click',e=>{if(e.target===document.getElementById('booking-modal'))closeBooking();});
+
+// ─── CALC ───
+window.calcFare = () => {
+  const dist=parseFloat(document.getElementById('calc-dist').value)||0;
+  const hrs=parseFloat(document.getElementById('calc-hrs').value)||0;
+  const v=document.getElementById('calc-vehicle').value;
+  const s=document.getElementById('calc-service').value;
+  if (!dist&&!hrs){document.getElementById('calc-price').textContent='Fill form';return;}
+  let perKm=v==='luxury'?6:v==='premium'?4:2.5;
+  let perHr=v==='luxury'?80:v==='premium'?55:35;
+  let mult=s==='wedding'?1.4:s==='overnight'?1.5:s==='airport'?1.2:1;
+  let total=Math.round((80+dist*perKm+hrs*perHr)*mult);
+  document.getElementById('calc-price').textContent='GH₵ '+total.toLocaleString();
+  document.getElementById('calc-note').textContent='Estimated · Final price at booking';
+};
+
+// Expose globals
+window.openBooking=window.openBooking;
+window.closeBooking=window.closeBooking;
+</script>
+</body>
+</html>

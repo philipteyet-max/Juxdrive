@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Fleet — JuxDrive Chauffeuring</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --yellow: #FFD000;
+    --yellow-dark: #E6BB00;
+    --black: #0A0A0A;
+    --white: #FFFFFF;
+    --gray: #F5F5F0;
+    --text-muted: #555;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'DM Sans', sans-serif; color: var(--black); background: var(--white); overflow-x: hidden; }
+  h1,h2,h3,h4 { font-family: 'Playfair Display', serif; }
+  img { max-width: 100%; display: block; }
+  a { text-decoration: none; color: inherit; }
+
+  /* NAV */
+  nav { position: fixed; top: 0; width: 100%; z-index: 1000; background: rgba(10,10,10,0.97); backdrop-filter: blur(8px); padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 68px; border-bottom: 1px solid rgba(255,208,0,0.15); }
+  .nav-logo { display: flex; align-items: center; gap: 10px; }
+  .nav-logo-mark { width: 38px; height: 38px; background: var(--yellow); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 900; font-size: 18px; color: var(--black); }
+  .nav-logo-text { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 20px; color: var(--white); letter-spacing: 1px; }
+  .nav-logo-text span { color: var(--yellow); }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: rgba(255,255,255,0.8); font-size: 13.5px; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--yellow); }
+  .nav-cta { background: var(--yellow); color: var(--black); padding: 9px 22px; border-radius: 4px; font-size: 13px; font-weight: 600; border: none; cursor: pointer; }
+
+  /* PAGE HERO — FREEDOM TO CHOOSE */
+  .fleet-hero {
+    min-height: 520px; background: var(--white); display: grid;
+    grid-template-columns: 1fr 1fr; padding-top: 68px; overflow: hidden;
+  }
+  .fleet-hero-left {
+    background: var(--black); display: flex; flex-direction: column;
+    justify-content: center; padding: 80px 8% 80px 8%;
+    position: relative; overflow: hidden;
+  }
+  .fleet-hero-left::after {
+    content: ''; position: absolute; top: 0; right: -60px; width: 120px; height: 100%;
+    background: var(--yellow);
+    clip-path: polygon(50% 0%, 100% 0%, 50% 100%, 0% 100%);
+  }
+  .fleet-hero-eyebrow { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,208,0,0.7); margin-bottom: 16px; }
+  .fleet-hero-title { font-size: clamp(44px, 6vw, 78px); font-weight: 900; line-height: 0.95; color: var(--white); margin-bottom: 20px; }
+  .fleet-hero-title span { color: var(--yellow); }
+  .fleet-hero-sub { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.75; max-width: 380px; margin-bottom: 36px; }
+  .fleet-hero-right { position: relative; background: #f0f0ec; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+  .fleet-hero-car { width: 100%; height: 100%; object-fit: cover; }
+  .fleet-hero-yellow-bg { position: absolute; bottom: 0; left: 0; right: 0; height: 55%; background: var(--yellow); z-index: 0; clip-path: polygon(0% 30%, 100% 0%, 100% 100%, 0% 100%); }
+  .fleet-hero-car-wrap { position: relative; z-index: 1; width: 90%; padding-bottom: 40px; }
+  .fleet-hero-car-wrap img { width: 100%; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.25)); }
+
+  /* FILTER BAR */
+  .filter-bar { background: var(--black); padding: 20px 8%; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid rgba(255,208,0,0.1); }
+  .filter-label { font-size: 12px; color: rgba(255,255,255,0.4); letter-spacing: 1px; text-transform: uppercase; margin-right: 8px; }
+  .filter-btn { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); padding: 7px 18px; border-radius: 30px; font-size: 13px; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .filter-btn:hover, .filter-btn.active { background: var(--yellow); border-color: var(--yellow); color: var(--black); font-weight: 600; }
+
+  /* VEHICLE GRID */
+  .vehicles-section { padding: 72px 8%; background: var(--white); }
+  .vehicles-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .vehicle-card { border: 1.5px solid #eee; border-radius: 12px; overflow: hidden; transition: transform 0.3s, border-color 0.2s, box-shadow 0.3s; }
+  .vehicle-card:hover { transform: translateY(-6px); border-color: var(--yellow); box-shadow: 0 16px 48px rgba(255,208,0,0.12); }
+  .vehicle-img-wrap { position: relative; background: var(--gray); padding: 28px 20px 16px; text-align: center; }
+  .vehicle-img-wrap img { height: 160px; width: 100%; object-fit: contain; transition: transform 0.4s; }
+  .vehicle-card:hover .vehicle-img-wrap img { transform: scale(1.05); }
+  .vehicle-class-badge { position: absolute; top: 14px; left: 14px; background: var(--black); color: var(--yellow); padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+  .vehicle-body { padding: 20px 20px 24px; }
+  .vehicle-name { font-size: 20px; margin-bottom: 4px; }
+  .vehicle-tagline { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .vehicle-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+  .spec-item { background: var(--gray); border-radius: 6px; padding: 8px 12px; }
+  .spec-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #999; font-weight: 600; margin-bottom: 2px; }
+  .spec-value { font-size: 13px; font-weight: 600; color: var(--black); }
+  .vehicle-price { display: flex; align-items: baseline; gap: 6px; margin-bottom: 16px; }
+  .price-from { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 1px; }
+  .price-num { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: var(--black); }
+  .price-unit { font-size: 13px; color: #888; }
+  .book-btn { width: 100%; background: var(--yellow); color: var(--black); padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; transition: background 0.2s; font-family: 'DM Sans', sans-serif; }
+  .book-btn:hover { background: var(--yellow-dark); }
+
+  /* PERSONAL CAR SECTION */
+  .personal-section { padding: 80px 8%; background: var(--black); }
+  .personal-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .personal-title { font-size: clamp(30px,4vw,52px); color: var(--white); margin-bottom: 16px; }
+  .personal-title span { color: var(--yellow); }
+  .personal-sub { font-size: 15px; color: rgba(255,255,255,0.5); line-height: 1.75; margin-bottom: 32px; }
+  .personal-bullets { display: flex; flex-direction: column; gap: 14px; margin-bottom: 36px; }
+  .personal-bullet { display: flex; gap: 12px; align-items: flex-start; color: rgba(255,255,255,0.75); font-size: 14px; }
+  .personal-bullet-icon { color: var(--yellow); font-size: 16px; margin-top: 2px; flex-shrink: 0; }
+  .personal-form-wrap { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 36px; }
+  .personal-form-title { font-size: 20px; color: var(--white); margin-bottom: 20px; }
+  .p-form { display: flex; flex-direction: column; gap: 14px; }
+  .p-input { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); color: var(--white); padding: 13px 16px; border-radius: 6px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 100%; outline: none; transition: border-color 0.2s; }
+  .p-input:focus { border-color: var(--yellow); }
+  .p-input::placeholder { color: rgba(255,255,255,0.25); }
+  .p-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  select.p-input option { background: #1a1a1a; }
+
+  /* PARTNERS */
+  .partners-section { padding: 64px 8%; background: var(--gray); text-align: center; }
+  .partners-title { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #888; margin-bottom: 36px; font-weight: 600; }
+  .partners-row { display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .partner-pill { background: var(--white); border: 1px solid #ddd; padding: 12px 28px; border-radius: 8px; font-size: 13px; font-weight: 700; color: #444; letter-spacing: 0.5px; transition: border-color 0.2s; }
+  .partner-pill:hover { border-color: var(--yellow); }
+
+  /* CTA BAND */
+  .cta-band { background: var(--yellow); padding: 72px 8%; display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap; }
+  .cta-band-title { font-size: clamp(26px, 3.5vw, 44px); color: var(--black); max-width: 520px; line-height: 1.2; }
+  .btn-primary { background: var(--yellow); color: var(--black); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: inline-block; }
+  .btn-primary:hover { background: var(--yellow-dark); }
+  .btn-black { background: var(--black); color: var(--white); padding: 14px 36px; border-radius: 4px; font-size: 14px; font-weight: 600; border: none; cursor: pointer; display: inline-block; transition: background 0.2s; }
+  .btn-black:hover { background: #222; }
+  .btn-outline-white { background: transparent; color: var(--black); padding: 13px 32px; border-radius: 4px; font-size: 14px; font-weight: 500; border: 1.5px solid var(--black); cursor: pointer; display: inline-block; }
+
+  /* FOOTER */
+  footer { background: #060606; border-top: 1px solid rgba(255,208,0,0.1); padding: 60px 8% 32px; color: rgba(255,255,255,0.7); }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 48px; }
+  .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .footer-logo-mark { width: 34px; height: 34px; background: var(--yellow); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 900; color: var(--black); }
+  .footer-logo-name { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--white); font-weight: 700; }
+  .footer-about p { font-size: 13.5px; line-height: 1.75; max-width: 280px; }
+  .footer-col h4 { font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--white); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 20px; }
+  .footer-links { display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a { font-size: 13.5px; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--yellow); }
+  .footer-divider { border: none; border-top: 1px solid rgba(255,255,255,0.06); margin-bottom: 28px; }
+  .footer-bottom { display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 12.5px; color: rgba(255,255,255,0.3); }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.active { display: flex; }
+  .modal { background: var(--white); border-radius: 12px; padding: 40px; max-width: 560px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; }
+  .modal-close { position: absolute; top: 16px; right: 20px; font-size: 26px; cursor: pointer; background: none; border: none; color: #aaa; }
+  .modal-car-banner { background: var(--gray); border-radius: 8px; padding: 24px; text-align: center; margin-bottom: 24px; }
+  .modal-car-banner img { height: 120px; width: 100%; object-fit: contain; margin-bottom: 10px; }
+  .modal-car-name { font-size: 22px; font-family: 'Playfair Display', serif; }
+  .modal-car-price { font-size: 14px; color: #888; margin-top: 4px; }
+  .modal-form { display: flex; flex-direction: column; gap: 14px; }
+  .modal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-input { border: 1.5px solid #e0e0e0; border-radius: 6px; padding: 13px 16px; font-size: 14px; font-family: 'DM Sans', sans-serif; width: 100%; outline: none; transition: border-color 0.2s; }
+  .modal-input:focus { border-color: var(--yellow); }
+  .modal-label { font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: #999; margin-bottom: 4px; display: block; }
+
+  /* ANIMATE */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .fleet-hero-left { animation: fadeUp 0.6s ease both; }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) { .vehicles-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 768px) {
+    .fleet-hero { grid-template-columns: 1fr; min-height: auto; }
+    .fleet-hero-right { height: 300px; }
+    .vehicles-grid, .personal-inner { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .cta-band { justify-content: center; text-align: center; }
+    .p-row { grid-template-columns: 1fr; }
+  }
+
+  /* ═══ JUXDRIVE ANIMATIONS — FLEET PAGE ═══ */
+  @keyframes jx-fade-up    { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes jx-slide-right{ from{opacity:0;transform:translateX(-28px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes jx-scale-up   { from{opacity:0;transform:scale(0.94)} to{opacity:1;transform:scale(1)} }
+  @keyframes jx-shimmer    { 0%{background-position:-200% center} 100%{background-position:200% center} }
+  @keyframes jx-float      { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+  @keyframes jx-nav-in     { from{opacity:0;transform:translateY(-100%)} to{opacity:1;transform:translateY(0)} }
+  @keyframes jx-stripe-diagonal { from{opacity:0;transform:translateX(-20px)} to{opacity:1;transform:translateX(0)} }
+
+  nav { animation: jx-nav-in 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+  .nav-links a { position:relative; }
+  .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:1.5px; background:var(--yellow); transition:width 0.3s cubic-bezier(0.22,1,0.36,1); }
+  .nav-links a:hover::after, .nav-links a.active::after { width:100%; }
+
+  /* Hero */
+  .fleet-hero-left   { animation: jx-fade-up 0.8s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+  .fleet-hero-title  { animation: jx-fade-up 0.8s 0.2s cubic-bezier(0.22,1,0.36,1) both; }
+  .fleet-hero-sub    { animation: jx-fade-up 0.8s 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+  .fleet-hero-car-wrap img { animation: jx-float 6s 1s ease-in-out infinite; }
+
+  /* Scroll reveals */
+  .reveal { opacity:0; transform:translateY(24px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .reveal-left  { opacity:0; transform:translateX(-28px); transition:opacity 0.75s cubic-bezier(0.22,1,0.36,1),transform 0.75s cubic-bezier(0.22,1,0.36,1); }
+  .reveal-left.visible { opacity:1; transform:translateX(0); }
+  .reveal-stagger > * { opacity:0; transform:translateY(20px); transition:opacity 0.6s cubic-bezier(0.22,1,0.36,1),transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+  .reveal-stagger.visible > *:nth-child(1){opacity:1;transform:translateY(0);transition-delay:0s}
+  .reveal-stagger.visible > *:nth-child(2){opacity:1;transform:translateY(0);transition-delay:0.1s}
+  .reveal-stagger.visible > *:nth-child(3){opacity:1;transform:translateY(0);transition-delay:0.2s}
+  .reveal-stagger.visible > *:nth-child(4){opacity:1;transform:translateY(0);transition-delay:0.3s}
+  .reveal-stagger.visible > *:nth-child(5){opacity:1;transform:translateY(0);transition-delay:0.4s}
+  .reveal-stagger.visible > *:nth-child(6){opacity:1;transform:translateY(0);transition-delay:0.5s}
+
+  /* Vehicle cards */
+  .vehicle-card { transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), border-color 0.3s, box-shadow 0.35s; }
+  .vehicle-card:hover { transform: translateY(-8px) scale(1.01); }
+  .vehicle-img-wrap img { transition: transform 0.5s cubic-bezier(0.22,1,0.36,1); }
+  .vehicle-card:hover .vehicle-img-wrap img { transform: scale(1.07) translateY(-4px); }
+
+  /* Book button */
+  .book-btn { position:relative; overflow:hidden; transition:background 0.25s, transform 0.25s cubic-bezier(0.22,1,0.36,1), box-shadow 0.25s; }
+  .book-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,0.2) 50%,transparent 70%); background-size:200% 100%; opacity:0; transition:opacity 0.3s; }
+  .book-btn:hover::after { opacity:1; animation:jx-shimmer 0.6s ease; }
+  .book-btn:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(255,208,0,0.3); }
+
+  /* Filter buttons */
+  .filter-btn { transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
+
+  /* Partner pills */
+  .partner-pill { transition: all 0.25s cubic-bezier(0.22,1,0.36,1); }
+  .partner-pill:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+
+  /* Personal bullets */
+  .personal-bullet { transition: transform 0.25s cubic-bezier(0.22,1,0.36,1); }
+  .personal-bullet:hover { transform: translateX(4px); }
+
+  /* Scroll progress */
+  #scroll-bar { position:fixed; top:0; left:0; height:2px; background:var(--yellow); z-index:9999; width:0%; box-shadow:0 0 8px rgba(255,208,0,0.6); }
+
+  /* Nav pulse */
+  @keyframes jx-pulse-yellow { 0%,100%{box-shadow:0 0 0 0 rgba(255,208,0,0.4)} 50%{box-shadow:0 0 0 10px rgba(255,208,0,0)} }
+  .nav-cta { animation: jx-pulse-yellow 3s 2s ease-in-out infinite; }
+  .nav-cta:hover { animation: none; }
+
+  /* Modal */
+  .modal-overlay.active .modal { animation: jx-scale-up 0.35s cubic-bezier(0.22,1,0.36,1) both; }
+
+  /* Footer */
+  .footer-links a { transition: color 0.2s, transform 0.2s; display:inline-block; }
+  .footer-links a:hover { transform: translateX(4px); }
+
+</style>
+</head>
+<body>
+<div id="scroll-bar"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-mark">JX</div>
+    <span class="nav-logo-text">Jux<span>Drive</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#drivers">About Us</a>
+    <a href="services.html">Services</a>
+    <a href="index.html#drivers">Drivers</a>
+    <a href="fleet.html" class="active">Fleet</a>
+    <a href="index.html#contact">Contact Us</a>
+  </div>
+  <button class="nav-cta" onclick="openBooking('','')">Book a Driver</button>
+</nav>
+
+<!-- FLEET HERO -->
+<div class="fleet-hero">
+  <div class="fleet-hero-left">
+    <div class="fleet-hero-eyebrow">Premium Selection</div>
+    <h1 class="fleet-hero-title">FREEDOM<br>TO <span>CHOOSE</span></h1>
+    <p class="fleet-hero-sub">We've curated the best vehicle options with the most positive reviews and the most competitive rates — so you can ride exactly how you want.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="document.getElementById('vehicles-grid').scrollIntoView({behavior:'smooth'})">Browse Fleet →</button>
+      <a href="#personal" style="background:rgba(255,255,255,0.1);color:var(--white);padding:14px 28px;border-radius:4px;font-size:14px;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.2);">Use My Own Car</a>
+    </div>
+  </div>
+  <div class="fleet-hero-right">
+    <div class="fleet-hero-yellow-bg"></div>
+    <div class="fleet-hero-car-wrap">
+      <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=900&q=80" alt="Mercedes fleet car">
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" onclick="filterCars('all', this)">All Vehicles</button>
+  <button class="filter-btn" onclick="filterCars('standard', this)">Standard</button>
+  <button class="filter-btn" onclick="filterCars('premium', this)">Premium SUV</button>
+  <button class="filter-btn" onclick="filterCars('luxury', this)">Luxury</button>
+</div>
+
+<!-- VEHICLES GRID -->
+<section class="vehicles-section" id="vehicles-grid">
+  <div class="vehicles-grid" id="cars-grid">
+
+    <div class="vehicle-card reveal" data-class="standard">
+      <div class="vehicle-img-wrap">
+        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=500&q=80" alt="Toyota Camry">
+        <div class="vehicle-class-badge">Standard</div>
+      </div>
+      <div class="vehicle-body">
+        <h3 class="vehicle-name">Toyota Camry</h3>
+        <p class="vehicle-tagline">Reliable comfort for everyday journeys</p>
+        <div class="vehicle-specs">
+          <div class="spec-item"><div class="spec-label">Transmission</div><div class="spec-value">Automatic</div></div>
+          <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">2.5L</div></div>
+          <div class="spec-item"><div class="spec-label">Exterior</div><div class="spec-value">White</div></div>
+          <div class="spec-item"><div class="spec-label">Drivetrain</div><div class="spec-value">FWD</div></div>
+        </div>
+        <div class="vehicle-price">
+          <span class="price-from">From</span>
+          <span class="price-num">GH₵150</span>
+          <span class="price-unit">/ booking</span>
+        </div>
+        <button class="book-btn" onclick="openBooking('Toyota Camry', 'GH₵150')">Book Now →</button>
+      </div>
+    </div>
+
+    <div class="vehicle-card reveal" data-class="standard">
+      <div class="vehicle-img-wrap">
+        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=500&q=80" alt="Nissan Altima">
+        <div class="vehicle-class-badge">Standard</div>
+      </div>
+      <div class="vehicle-body">
+        <h3 class="vehicle-name">Nissan Altima</h3>
+        <p class="vehicle-tagline">Smooth, spacious, and fuel-efficient</p>
+        <div class="vehicle-specs">
+          <div class="spec-item"><div class="spec-label">Transmission</div><div class="spec-value">Automatic</div></div>
+          <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">2.0L</div></div>
+          <div class="spec-item"><div class="spec-label">Exterior</div><div class="spec-value">Silver</div></div>
+          <div class="spec-item"><div class="spec-label">Drivetrain</div><div class="spec-value">FWD</div></div>
+        </div>
+        <div class="vehicle-price">
+          <span class="price-from">From</span>
+          <span class="price-num">GH₵130</span>
+          <span class="price-unit">/ booking</span>
+        </div>
+        <button class="book-btn" onclick="openBooking('Nissan Altima', 'GH₵130')">Book Now →</button>
+      </div>
+    </div>
+
+    <div class="vehicle-card reveal" data-class="premium">
+      <div class="vehicle-img-wrap" style="background:#1a1a1a;">
+        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80" alt="Hyundai Tucson">
+        <div class="vehicle-class-badge" style="background:var(--yellow);color:var(--black);">Premium</div>
+      </div>
+      <div class="vehicle-body">
+        <h3 class="vehicle-name">Hyundai Tucson</h3>
+        <p class="vehicle-tagline">Premium SUV — elevated comfort</p>
+        <div class="vehicle-specs">
+          <div class="spec-item"><div class="spec-label">Transmission</div><div class="spec-value">Automatic</div></div>
+          <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">2.0L</div></div>
+          <div class="spec-item"><div class="spec-label">Exterior</div><div class="spec-value">Black</div></div>
+          <div class="spec-item"><div class="spec-label">Drivetrain</div><div class="spec-value">AWD</div></div>
+        </div>
+        <div class="vehicle-price">
+          <span class="price-from">From</span>
+          <span class="price-num">GH₵250</span>
+          <span class="price-unit">/ booking</span>
+        </div>
+        <button class="book-btn" onclick="openBooking('Hyundai Tucson SUV', 'GH₵250')">Book Now →</button>
+      </div>
+    </div>
+
+    <div class="vehicle-card reveal" data-class="premium">
+      <div class="vehicle-img-wrap" style="background:#1a1800;">
+        <img src="https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=500&q=80" alt="Mazda CX-5">
+        <div class="vehicle-class-badge" style="background:var(--yellow);color:var(--black);">Premium</div>
+      </div>
+      <div class="vehicle-body">
+        <h3 class="vehicle-name">Mazda CX-5</h3>
+        <p class="vehicle-tagline">Sporty, sleek, and premium comfort</p>
+        <div class="vehicle-specs">
+          <div class="spec-item"><div class="spec-label">Transmission</div><div class="spec-value">Automatic</div></div>
+          <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">2.5L</div></div>
+          <div class="spec-item"><div class="spec-label">Exterior</div><div class="spec-value">Red</div></div>
+          <div class="spec-item"><div class="spec-label">Drivetrain</div><div class="spec-value">4WD</div></div>
+        </div>
+        <div class="vehicle-price">
+          <span class="price-from">From</span>
+          <span class="price-num">GH₵280</span>
+          <span class="price-unit">/ booking</span>
+        </div>
+        <button class="book-btn" onclick="openBooking('Mazda CX-5', 'GH₵280')">Book Now →</button>
+      </div>
+    </div>
+
+    <div class="vehicle-card reveal" data-class="luxury">
+      <div class="vehicle-img-wrap" style="background:#0d0d0d;">
+        <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=500&q=80" alt="Mercedes-Benz S-Class">
+        <div class="vehicle-class-badge" style="background:#fff;color:var(--black);">Luxury</div>
+      </div>
+      <div class="vehicle-body">
+        <h3 class="vehicle-name">Mercedes-Benz S-Class</h3>
+        <p class="vehicle-tagline">The pinnacle of luxury chauffeuring</p>
+        <div class="vehicle-specs">
+          <div class="spec-item"><div class="spec-label">Transmission</div><div class="spec-value">Automatic</div></div>
+          <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">3.0L</div></div>
+          <div class="spec-item"><div class="spec-label">Exterior</div><div class="spec-value">Black</div></div>
+          <div class="spec-item"><div class="spec-label">Drivetrain</div><div class="spec-value">4WD</div></div>
+        </div>
+        <div class="vehicle-price">
+          <span class="price-from">From</span>
+          <span class="price-num">GH₵600</span>
+          <span class="price-unit">/ booking</span>
+        </div>
+        <button class="book-btn" onclick="openBooking('Mercedes-Benz S-Class', 'GH₵600')">Book Now →</button>
+      </div>
+    </div>
+
+    <div class="vehicle-card reveal" data-class="luxury">
+      <div class="vehicle-img-wrap" style="background:#0d0d0d;">
+        <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=500&q=80" alt="Cadillac Escalade">
+        <div class="vehicle-class-badge" style="background:#fff;color:var(--black);">Luxury</div>
+      </div>
+      <div class="vehicle-body">
+        <h3 class="vehicle-name">Cadillac Escalade</h3>
+        <p class="vehicle-tagline">Bold presence, executive comfort</p>
+        <div class="vehicle-specs">
+          <div class="spec-item"><div class="spec-label">Transmission</div><div class="spec-value">Automatic</div></div>
+          <div class="spec-item"><div class="spec-label">Engine</div><div class="spec-value">6.2L V8</div></div>
+          <div class="spec-item"><div class="spec-label">Exterior</div><div class="spec-value">Black</div></div>
+          <div class="spec-item"><div class="spec-label">Drivetrain</div><div class="spec-value">4WD</div></div>
+        </div>
+        <div class="vehicle-price">
+          <span class="price-from">From</span>
+          <span class="price-num">GH₵750</span>
+          <span class="price-unit">/ booking</span>
+        </div>
+        <button class="book-btn" onclick="openBooking('Cadillac Escalade', 'GH₵750')">Book Now →</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PERSONAL CAR SECTION -->
+<section class="personal-section" id="personal">
+  <div class="personal-inner">
+    <div>
+      <span style="display:inline-block;font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,208,0,0.8);font-weight:600;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--yellow);">Bring Your Own</span>
+      <h2 class="personal-title">We Drive<br><span>Your Car</span></h2>
+      <p class="personal-sub">Already have a vehicle? Our professional chauffeurs will drive your own car — perfect for weddings, events, and any occasion where you want comfort in familiar surroundings.</p>
+      <div class="personal-bullets">
+        <div class="personal-bullet"><span class="personal-bullet-icon">✓</span> No rental cost — just the chauffeur fee</div>
+        <div class="personal-bullet"><span class="personal-bullet-icon">✓</span> Your car, your comfort, our professionalism</div>
+        <div class="personal-bullet"><span class="personal-bullet-icon">✓</span> Fully insured and licensed drivers</div>
+        <div class="personal-bullet"><span class="personal-bullet-icon">✓</span> Available for personal sedans, SUVs, and vans</div>
+      </div>
+      <button class="btn-primary" onclick="openPersonalCar()">Book a Driver for My Car</button>
+    </div>
+    <div class="personal-form-wrap" id="personal-form-wrap">
+      <h3 class="personal-form-title">Your Vehicle Details</h3>
+      <div class="p-form">
+        <div class="p-row">
+          <input class="p-input" type="text" placeholder="Your Name">
+          <input class="p-input" type="tel" placeholder="+233 XX XXX XXXX">
+        </div>
+        <div class="p-row">
+          <input class="p-input" type="text" placeholder="Car Model (e.g. Camry)">
+          <input class="p-input" type="text" placeholder="Year (e.g. 2020)">
+        </div>
+        <div class="p-row">
+          <select class="p-input"><option>Automatic</option><option>Manual</option></select>
+          <select class="p-input"><option>FWD</option><option>RWD</option><option>4WD/AWD</option></select>
+        </div>
+        <input class="p-input" type="text" placeholder="Pickup Location">
+        <input class="p-input" type="date">
+        <button class="btn-primary" style="width:100%;padding:14px;" onclick="confirmPersonal()">Request Chauffeur →</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="partners-section">
+  <div class="partners-title reveal">Our Vehicle Partners</div>
+  <div class="partners-row reveal">
+    <div class="partner-pill">Nissan Ghana</div>
+    <div class="partner-pill">Mercedes-Benz</div>
+    <div class="partner-pill">Toyota Ghana</div>
+    <div class="partner-pill">Mazda West Africa</div>
+    <div class="partner-pill">Hyundai GH</div>
+    <div class="partner-pill">Cadillac Africa</div>
+    <div class="partner-pill">Audi Accra</div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<div class="cta-band">
+  <h2 class="cta-band-title">Found the perfect vehicle for your journey?</h2>
+  <div style="display:flex;gap:14px;flex-wrap:wrap;">
+    <button class="btn-black" onclick="openBooking('','')">Book a Driver Now</button>
+    <a href="services.html" class="btn-outline-white">View All Services</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="footer-logo-mark">JX</div><span class="footer-logo-name">JuxDrive</span></div>
+      <p>Premium chauffeur services across Ghana. Professional, safe, and reliable transportation for all occasions.</p>
+    </div>
+    <div class="footer-col"><h4>Services</h4><div class="footer-links"><a href="services.html">Wedding Rides</a><a href="services.html">Business Trips</a><a href="services.html">Overnight Trips</a><a href="services.html">Airport Pickups</a></div></div>
+    <div class="footer-col"><h4>Company</h4><div class="footer-links"><a href="index.html">Home</a><a href="index.html#drivers">About Us</a><a href="fleet.html">Our Fleet</a><a href="index.html#contact">Contact</a></div></div>
+    <div class="footer-col"><h4>Contact</h4><p style="font-size:13px;line-height:1.9;">📞 +(233) 57 400 2145<br>✉️ info@juxdrive.org<br>📍 East Legon, Accra, Ghana</p></div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-bottom"><span class="footer-copy">© 2025 JuxDrive Chauffeuring. All rights reserved.</span></div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="booking-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeBooking()">×</button>
+    <div class="modal-car-banner" id="modal-car-banner">
+      <img src="https://images.unsplash.com/photo-1553440569-bcc63803a83d?w=400&q=80" alt="Vehicle" id="modal-car-img">
+      <div class="modal-car-name" id="modal-car-name">Selected Vehicle</div>
+      <div class="modal-car-price" id="modal-car-price">Price confirmed at booking</div>
+    </div>
+    <div class="modal-form">
+      <div class="modal-row">
+        <div><label class="modal-label">Full Name</label><input class="modal-input" type="text" placeholder="Your name"></div>
+        <div><label class="modal-label">Phone</label><input class="modal-input" type="tel" placeholder="+233 XX XXX XXXX"></div>
+      </div>
+      <div><label class="modal-label">Email</label><input class="modal-input" type="email" placeholder="you@email.com"></div>
+      <div class="modal-row">
+        <div><label class="modal-label">Pickup Date</label><input class="modal-input" type="date"></div>
+        <div><label class="modal-label">Pickup Time</label><input class="modal-input" type="time"></div>
+      </div>
+      <div><label class="modal-label">Pickup Location</label><input class="modal-input" type="text" placeholder="Your pickup address"></div>
+      <div><label class="modal-label">Drop-off Location</label><input class="modal-input" type="text" placeholder="Destination"></div>
+      <div><label class="modal-label">Purpose of Booking</label>
+        <select class="modal-input"><option>Wedding</option><option>Business Trip</option><option>Airport Pickup</option><option>Overnight Trip</option><option>Personal / Errand</option></select>
+      </div>
+      <button class="btn-primary" style="width:100%;padding:15px;" onclick="confirmBooking()">Confirm Booking →</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }});
+  }, { threshold: 0.08, rootMargin:'0px 0px -40px 0px' });
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-stagger').forEach(el => observer.observe(el));
+
+  // Stagger vehicle cards on page load
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const cards = document.querySelectorAll('.vehicle-card');
+        cards.forEach((c, i) => {
+          c.style.opacity = '0'; c.style.transform = 'translateY(28px)';
+          c.style.transition = `opacity 0.65s ${i*0.08}s cubic-bezier(0.22,1,0.36,1), transform 0.65s ${i*0.08}s cubic-bezier(0.22,1,0.36,1)`;
+          setTimeout(() => { c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }, i * 80 + 50);
+        });
+        cardObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.05 });
+  const grid = document.getElementById('vehicles-grid');
+  if (grid) cardObserver.observe(grid);
+
+  // Scroll progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    document.getElementById('scroll-bar').style.width = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight) * 100) + '%';
+  }, { passive: true });
+
+  // Nav solidify on scroll
+  const navEl = document.querySelector('nav');
+  window.addEventListener('scroll', () => {
+    navEl.style.background = window.scrollY > 60 ? 'rgba(10,10,10,1)' : 'rgba(10,10,10,0.97)';
+  }, { passive: true });
+
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+  const supabase = createClient('https://eyuoejjewuzxouirymze.supabase.co','sb_publishable_TtgDPqo5tnX-bpiu3AclgQ_Jzg6M-y_');
+
+  function filterCars(cls, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.vehicle-card').forEach(card => {
+      card.style.display = (cls === 'all' || card.dataset.class === cls) ? 'block' : 'none';
+    });
+  }
+
+  function openBooking(car, price) {
+    if (car) { document.getElementById('modal-car-name').textContent = car; document.getElementById('modal-car-price').textContent = 'Starting from ' + price; }
+    document.getElementById('booking-modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeBooking() { document.getElementById('booking-modal').classList.remove('active'); document.body.style.overflow = ''; }
+  function openPersonalCar() { document.getElementById('personal').scrollIntoView({behavior:'smooth'}); }
+
+  async function confirmBooking() {
+    const inputs = document.querySelectorAll('.modal-input');
+    const name  = inputs[0].value.trim();
+    const phone = inputs[1].value.trim();
+    const email = inputs[2].value.trim();
+    const date  = inputs[3].value;
+    const time  = inputs[4].value;
+    const from  = inputs[5].value.trim();
+    const to    = inputs[6].value.trim();
+    const purpose = inputs[7].value;
+    const vehicle = document.getElementById('modal-car-name').textContent;
+
+    if (!name || !phone || !date || !from || !to) { alert('Please fill in all required fields.'); return; }
+
+    const btn = document.querySelector('.modal .btn-primary');
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      const { error } = await supabase.from('bookings').insert([{
+        full_name: name, phone, email,
+        pickup_date: date, pickup_time: time || null,
+        pickup_location: from, dropoff_location: to,
+        purpose, vehicle_option: 'rent_vehicle',
+        vehicle_model: vehicle, status: 'pending'
+      }]);
+      if (error) throw error;
+      document.querySelector('.modal').innerHTML = `<div style="text-align:center;padding:48px 20px"><div style="font-size:56px;margin-bottom:16px">✅</div><h2 style="font-family:'Playfair Display',serif;font-size:26px;margin-bottom:10px">Booking Saved!</h2><p style="color:#666;font-size:14px;line-height:1.75;margin-bottom:28px">Thank you, <strong>${name}</strong>. We'll confirm your vehicle and driver within 30 minutes.</p><button style="background:var(--yellow);color:var(--black);padding:12px 28px;border:none;border-radius:4px;font-size:14px;font-weight:700;cursor:pointer" onclick="closeBooking()">Done</button></div>`;
+    } catch(err) {
+      btn.textContent = 'Confirm Booking →'; btn.disabled = false;
+      alert('Could not save booking. Please call +(233) 57 400 2145 directly.'); console.error(err);
+    }
+  }
+
+  async function confirmPersonal() {
+    const inputs = document.querySelectorAll('.p-input');
+    const name  = inputs[0].value.trim();
+    const phone = inputs[1].value.trim();
+    const model = inputs[2].value.trim();
+    const year  = inputs[3].value.trim();
+    const trans = inputs[4].value;
+    const drive = inputs[5].value;
+    const from  = inputs[6].value.trim();
+    const date  = inputs[7].value;
+
+    if (!name || !phone || !from || !date) { alert('Please fill in name, phone, pickup location, and date.'); return; }
+
+    const btn = document.querySelector('#personal-form-wrap .btn-primary');
+    btn.textContent = 'Saving…'; btn.disabled = true;
+    try {
+      const { error } = await supabase.from('bookings').insert([{
+        full_name: name, phone,
+        pickup_date: date, pickup_location: from,
+        dropoff_location: 'TBD', purpose: 'Personal / Errand',
+        vehicle_option: 'personal_car',
+        vehicle_model: model, vehicle_year: year,
+        transmission: trans, drivetrain: drive,
+        status: 'pending'
+      }]);
+      if (error) throw error;
+      document.getElementById('personal-form-wrap').innerHTML = `<div style="text-align:center;padding:40px 20px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:12px"><div style="font-size:48px;margin-bottom:16px">✅</div><h3 style="font-family:'Playfair Display',serif;font-size:22px;color:var(--white);margin-bottom:10px">Request Saved!</h3><p style="color:rgba(255,255,255,0.5);font-size:14px;line-height:1.7">We'll call you within 30 minutes to confirm your chauffeur, <strong style="color:rgba(255,255,255,0.8)">${name}</strong>.</p></div>`;
+    } catch(err) {
+      btn.textContent = 'Request Chauffeur →'; btn.disabled = false;
+      alert('Could not save request. Please call +(233) 57 400 2145 directly.'); console.error(err);
+    }
+  }
+
+  window.filterCars = filterCars;
+  window.openBooking = openBooking;
+  window.closeBooking = closeBooking;
+  window.openPersonalCar = openPersonalCar;
+  window.confirmBooking = confirmBooking;
+  window.confirmPersonal = confirmPersonal;
+  document.getElementById('booking-modal').addEventListener('click', function(e) { if (e.target === this) closeBooking(); });
+</script>
+</body>
+</html>
